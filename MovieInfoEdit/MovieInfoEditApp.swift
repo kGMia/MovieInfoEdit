@@ -2,9 +2,9 @@ import SwiftUI
 
 @main
 struct MovieInfoEditApp: App {
-    @StateObject private var appState = AppState()
+    @State private var appState = AppState()
     
-    // 直接监听系统存储，保证最高优先级的重绘
+    // 监听系统级存储
     @AppStorage("appTheme") private var appThemeRaw: String = AppTheme.system.rawValue
     @AppStorage("appLanguage") private var languageRaw: String = AppLanguage.zhHans.rawValue
     
@@ -14,10 +14,27 @@ struct MovieInfoEditApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(appState)
+                .environment(appState)
                 .preferredColorScheme(appTheme.colorScheme)
         }
+        .defaultSize(width: 1080, height: 720)
+        .windowResizability(.contentMinSize)
+        .windowStyle(.hiddenTitleBar) // 隐藏系统原生标题栏
         .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("关于 MovieInfoEdit") {
+                    NSApplication.shared.orderFrontStandardAboutPanel(
+                        options: [
+                            NSApplication.AboutPanelOptionKey.credits: NSAttributedString(
+                                string: "一款优雅的视频元数据批处理工具。\n由 August 开发并开源。",
+                                attributes: [.font: NSFont.systemFont(ofSize: 11)]
+                            ),
+                            NSApplication.AboutPanelOptionKey.version: "1.0.0"
+                        ]
+                    )
+                }
+            }
+            
             CommandGroup(replacing: .newItem) {
                 Button(tr("Import Videos", lang: lang) + "...") {
                     NotificationCenter.default.post(name: .init("TriggerImportVideos"), object: nil)
@@ -42,9 +59,9 @@ struct MovieInfoEditApp: App {
             }
         }
         
+        // 恢复系统的偏好设置菜单 (Cmd + ,)
         Settings {
             SettingsView()
-                .environmentObject(appState)
                 .preferredColorScheme(appTheme.colorScheme)
         }
     }
