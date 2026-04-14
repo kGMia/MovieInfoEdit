@@ -2,9 +2,8 @@ import SwiftUI
 
 @main
 struct MovieInfoEditApp: App {
-    @StateObject private var appState = AppState()
+    @State private var appState = AppState()
     
-    // 直接监听系统存储，保证最高优先级的重绘
     @AppStorage("appTheme") private var appThemeRaw: String = AppTheme.system.rawValue
     @AppStorage("appLanguage") private var languageRaw: String = AppLanguage.zhHans.rawValue
     
@@ -14,10 +13,27 @@ struct MovieInfoEditApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(appState)
+                .environment(appState)
                 .preferredColorScheme(appTheme.colorScheme)
         }
+        .defaultSize(width: 1080, height: 720)
+        .windowResizability(.contentMinSize)
+        .windowStyle(.hiddenTitleBar)
         .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About MovieInfoEdit") {
+                    NSApplication.shared.orderFrontStandardAboutPanel(
+                        options: [
+                            NSApplication.AboutPanelOptionKey.credits: NSAttributedString(
+                                string: "An elegant batch .NFO file editor developed for macOS.",
+                                attributes: [.font: NSFont.systemFont(ofSize: 11)]
+                            ),
+                            NSApplication.AboutPanelOptionKey.version: "1.0.0"
+                        ]
+                    )
+                }
+            }
+            
             CommandGroup(replacing: .newItem) {
                 Button(tr("Import Videos", lang: lang) + "...") {
                     NotificationCenter.default.post(name: .init("TriggerImportVideos"), object: nil)
@@ -44,7 +60,6 @@ struct MovieInfoEditApp: App {
         
         Settings {
             SettingsView()
-                .environmentObject(appState)
                 .preferredColorScheme(appTheme.colorScheme)
         }
     }
