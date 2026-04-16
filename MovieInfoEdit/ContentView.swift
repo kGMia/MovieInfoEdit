@@ -794,7 +794,6 @@ struct EditorDetailView: View {
     var body: some View {
         ZStack(alignment: .top) {
             ScrollView { formContent.padding().padding(.top, 178) }
-
             // Header rendered naturally in ZStack, without clipping anomalies
             EditorHeaderView(
                 selectedVideos: selectedVideos,

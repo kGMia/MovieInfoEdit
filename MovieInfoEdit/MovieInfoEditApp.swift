@@ -58,6 +58,7 @@ struct MovieInfoEditApp: App {
             }
         }
         
+        // 恢复系统的偏好设置菜单 (Cmd + ,)
         Settings {
             SettingsView()
                 .preferredColorScheme(appTheme.colorScheme)
