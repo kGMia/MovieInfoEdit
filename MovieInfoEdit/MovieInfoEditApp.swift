@@ -3,13 +3,11 @@ import SwiftUI
 @main
 struct MovieInfoEditApp: App {
     @State private var appState = AppState()
-    
+
     @AppStorage("appTheme") private var appThemeRaw: String = AppTheme.system.rawValue
-    @AppStorage("appLanguage") private var languageRaw: String = AppLanguage.zhHans.rawValue
-    
-    var lang: AppLanguage { AppLanguage(rawValue: languageRaw) ?? .zhHans }
+
     var appTheme: AppTheme { AppTheme(rawValue: appThemeRaw) ?? .system }
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -21,11 +19,11 @@ struct MovieInfoEditApp: App {
         .windowStyle(.hiddenTitleBar)
         .commands {
             CommandGroup(replacing: .appInfo) {
-                Button("About MovieInfoEdit") {
+                Button(L("About MovieInfoEdit")) {
                     NSApplication.shared.orderFrontStandardAboutPanel(
                         options: [
                             NSApplication.AboutPanelOptionKey.credits: NSAttributedString(
-                                string: "An elegant batch .NFO file editor developed for macOS.",
+                                string: L("About Description"),
                                 attributes: [.font: NSFont.systemFont(ofSize: 11)]
                             ),
                             NSApplication.AboutPanelOptionKey.version: "1.0.0"
@@ -33,32 +31,31 @@ struct MovieInfoEditApp: App {
                     )
                 }
             }
-            
+
             CommandGroup(replacing: .newItem) {
-                Button(tr("Import Videos", lang: lang) + "...") {
+                Button(L("Import Videos") + "...") {
                     NotificationCenter.default.post(name: .init("TriggerImportVideos"), object: nil)
                 }
                 .keyboardShortcut("o", modifiers: .command)
-                
-                Menu(tr("Open Recent", lang: lang)) {
-                    Text(tr("No Recent Files", lang: lang)).disabled(true)
+
+                Menu(L("Open Recent")) {
+                    Text(L("No Recent Files")).disabled(true)
                 }
             }
-            
-            CommandMenu(tr("Process", lang: lang)) {
-                Button(tr("Add to Queue", lang: lang)) {
+
+            CommandMenu(L("Process")) {
+                Button(L("Add to Queue")) {
                     NotificationCenter.default.post(name: .init("TriggerAddToQueue"), object: nil)
                 }
                 .keyboardShortcut("s", modifiers: .command)
-                
-                Button(tr("Process Queue", lang: lang)) {
+
+                Button(L("Process Queue")) {
                     appState.processQueue()
                 }
                 .keyboardShortcut("r", modifiers: .command)
             }
         }
-        
-        // 恢复系统的偏好设置菜单 (Cmd + ,)
+
         Settings {
             SettingsView()
                 .preferredColorScheme(appTheme.colorScheme)
