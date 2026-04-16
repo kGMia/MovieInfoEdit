@@ -10,9 +10,22 @@
 		97941F022F8BF9B900BA1496 /* MovieInfoEdit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieInfoEdit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		972D70312F9096970025A943 /* Exceptions for "MovieInfoEdit" folder in "MovieInfoEdit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 97941F012F8BF9B900BA1496 /* MovieInfoEdit */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		97941F042F8BF9B900BA1496 /* MovieInfoEdit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				972D70312F9096970025A943 /* Exceptions for "MovieInfoEdit" folder in "MovieInfoEdit" target */,
+			);
 			path = MovieInfoEdit;
 			sourceTree = "<group>";
 		};
@@ -93,6 +106,8 @@
 				Base,
 				"zh-Hans",
 				"zh-Hant",
+				fr,
+				ja,
 			);
 			mainGroup = 97941EF92F8BF9B900BA1496;
 			minimizedProjectReferenceProxies = 1;
@@ -255,13 +270,9 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-
-				CURRENT_PROJECT_VERSION = 6;
-
-
-
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = L3B55KYTVT;
-				ENABLE_APP_SANDBOX = NO;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_FILE_ACCESS_MOVIES_FOLDER = readwrite;
 				ENABLE_FILE_ACCESS_MUSIC_FOLDER = readwrite;
@@ -280,8 +291,8 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MovieInfoEdit/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MovieInfoEdit;
-
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -310,12 +321,9 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-
-				CURRENT_PROJECT_VERSION = 6;
-
-
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = L3B55KYTVT;
-				ENABLE_APP_SANDBOX = NO;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_FILE_ACCESS_MOVIES_FOLDER = readwrite;
 				ENABLE_FILE_ACCESS_MUSIC_FOLDER = readwrite;
@@ -334,8 +342,8 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MovieInfoEdit/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MovieInfoEdit;
-
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (

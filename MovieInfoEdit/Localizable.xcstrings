@@ -1,805 +1,3078 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Editor & Import" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Editor" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "编辑与导入" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "編輯與導入" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "編集" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Éditeur" } }
-      }
-    },
-    "Process Queue" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Queue" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "处理序列" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "處理序列" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "キュー" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "File" } }
-      }
-    },
-    "Import Videos" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import Videos" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "导入视频" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "導入視頻" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "動画を読み込む" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer vidéos" } }
-      }
-    },
-    "Open Recent" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open Recent" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开最近" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "打開最近" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最近使った項目" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir récent" } }
-      }
-    },
-    "No Recent Files" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "No Recent Files" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "无最近文件" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "無最近文件" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最近のファイルなし" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucun fichier récent" } }
-      }
-    },
-    "Process" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Process" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "处理" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "處理" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "処理" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Traiter" } }
-      }
-    },
-    "Add to Queue" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add to Queue" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "加入序列" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "加入序列" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "キューに追加" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ajouter à la file" } }
-      }
-    },
-    "Basic Info" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Basic Info" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "基础信息" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "基礎信息" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "基本情報" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Infos de base" } }
-      }
-    },
-    "Title" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Title" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "标题" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "標題" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "タイトル" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Titre" } }
-      }
-    },
-    "Year" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Year" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "年份" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "年份" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "公開年" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Année" } }
-      }
-    },
-    "Country" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Country" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "国家地区" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "國家地區" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "制作国" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Pays" } }
-      }
-    },
-    "Premiered" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Premiered" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "首映日期" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "首映日期" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "公開日" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Première" } }
-      }
-    },
-    "Director" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Director" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "导演" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "導演" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "監督" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réalisateur" } }
-      }
-    },
-    "Studio" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Studio" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "工作室" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "工作室" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "スタジオ" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Studio" } }
-      }
-    },
-    "Genres" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Genres" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "类型" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "類型" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ジャンル" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Genres" } }
-      }
-    },
-    "Actors" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Actors" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "演员" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "演員" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "出演者" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Acteurs" } }
-      }
-    },
-    "Plot" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Plot" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "剧情简介" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "劇情簡介" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "あらすじ" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Synopsis" } }
-      }
-    },
-    "OCR" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "OCR Extract" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "提取字幕 (OCR)" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "提取字幕 (OCR)" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "字幕抽出(OCR)" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Extraire (OCR)" } }
-      }
-    },
-    "Rating" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Rating" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "评分" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "評分" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "評価" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Note" } }
-      }
-    },
-    "Settings" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Settings" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "设置" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "設置" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "設定" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Paramètres" } }
-      }
-    },
-    "Appearance & Lang" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Appearance & Language" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "外观与语言" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "外觀與語言" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "外観と表示言語" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Apparence et langue" } }
-      }
-    },
-    "Theme Setting" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Theme:" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "主题设定:" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "主題设定:" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "テーマ設定:" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Thème :" } }
-      }
-    },
-    "App Language" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "App Language:" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "应用语言:" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "應用语言:" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリ言語:" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Langue :" } }
-      }
-    },
-    "Language Restart Hint" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Some native UI elements may require an app restart." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "部分系统原生界面需重启后完全生效。" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "部分系統原生介面需重啟後完全生效。" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "一部のシステムUIは再起動後に反映されます。" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Certains éléments natifs nécessitent un redémarrage." } }
-      }
-    },
-    "Cache Management" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cache Management" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "缓存管理" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "緩存管理" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "キャッシュ管理" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gestion du cache" } }
-      }
-    },
-    "Cache Hint" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "The app records directors, genres and actors for quick autocomplete." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "系统会自动记录导演、类型、演员等信息，下次输入时可快速补全。" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "系統會自動記錄導演、類型、演員等資訊，下次輸入時可快速補全。" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "監督・ジャンル・出演者の入力履歴を記録し、次回の入力補完に活用します。" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "L'app enregistre les réalisateurs, genres et actors pour la saisie automatique." } }
-      }
-    },
-    "Clear Directors" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Clear Directors" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "清除历史导演" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "清除歷史导演" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "監督履歴を削除" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Effacer réalisateurs" } }
-      }
-    },
-    "Clear Genres" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Clear Genres" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "清除历史类型" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "清除歷史类型" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ジャンル履歴を削除" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Effacer genres" } }
-      }
-    },
-    "Clear Actors" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Clear Actors" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "清除历史演员" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "清除歷史演员" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "出演者履歴を削除" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Effacer acteurs" } }
-      }
-    },
-    "Clear All" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "⚠️ Clear All Records" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "⚠️ 清除所有记录" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "⚠️ 清除所有記錄" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "⚠️ すべての履歴を削除" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "⚠️ Tout effacer" } }
-      }
-    },
-    "Import" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "导入" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "導入" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "読み込む" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer" } }
-      }
-    },
-    "Remove from List" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remove from List" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "从列表中移除" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "從列表中移除" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "リストから削除" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Retirer de la liste" } }
-      }
-    },
-    "Remove Selected" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remove Selected" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "移除所选" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "移除所選" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選択したものを削除" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer la sélection" } }
-      }
-    },
-    "Reveal in Finder" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Reveal in Finder" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "在 Finder 中显示" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "在 Finder 中顯示" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Finderで表示" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher dans le Finder" } }
-      }
-    },
-    "Sort by Name" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sort by Name" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "按文件名排序" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "按檔案名排序" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "名前順に並べ替え" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Trier par nom" } }
-      }
-    },
-    "Sort by Added" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sort by Added" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "按导入顺序排序" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "按導入順序排序" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "追加順に並べ替え" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Trier par ajout" } }
-      }
-    },
-    "Toggle Sidebar" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Toggle Sidebar" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "切换侧边栏" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "切換側邊栏" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "サイドバー切替" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Basculer la barre" } }
-      }
-    },
-    "Drop Videos Here" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Drop video files here" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "拖入视频文件" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "拖入視頻文件" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "動画をドロップ" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Déposez des vidéos ici" } }
-      }
-    },
-    "Selected Count" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Selected" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已选" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "已選" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選択中" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sélectionnés" } }
-      }
-    },
-    "No Extension" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "No extension" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "无扩展名" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "無副檔名" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "拡張子なし" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sans extension" } }
-      }
-    },
-    "Select to Edit" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Select a video on the left to start editing" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "请在左侧选择视频以开始编辑" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "請在左側選擇視頻以開始編輯" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "左側で動画を選択して編集開始" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sélectionnez une vidéo à gauche pour commencer" } }
-      }
-    },
-    "Selected" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Selected" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已选中" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "已選中" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "选择中" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sélectionné" } }
-      }
-    },
-    "Videos" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "videos" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "个视频" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "個視頻" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "本の動画" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "vidéos" } }
-      }
-    },
-    "Leave Empty" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Leave empty" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "留空" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "留空" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "空欄のまま" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Laisser vide" } }
-      }
-    },
-    "Add Genre Hint" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Type and press Return to add" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "输入影片类型 (回车添加)" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "輸入影片類型 (回車添加)" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "入力後Returnで追加" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Tapez et appuyez sur Entrée" } }
-      }
-    },
-    "Quick Add" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Quick add:" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "快捷添加:" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "快捷添加:" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "クイック追加:" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ajout rapide :" } }
-      }
-    },
-    "Clear Rating" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Clear" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "清除" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "清除" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "クリア" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Effacer" } }
-      }
-    },
-    "Actor Name" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Name" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "姓名" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "姓名" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "氏名" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Nom" } }
-      }
-    },
-    "Actor Role" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Role" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "角色" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "角色" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "役名" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rôle" } }
-      }
-    },
-    "Actor Name PH" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Actor name" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "演员姓名" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "演員姓名" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "俳優名" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Nom de l'acteur" } }
-      }
-    },
-    "Actor Role PH" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Character name" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "饰演角色" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "角色" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "キャラクター名" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Nom du personnage" } }
-      }
-    },
-    "Add Actor" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add Actor" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "添加演员" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "添加演員" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "出演者を追加" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ajouter un acteur" } }
-      }
-    },
-    "Lead Male" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Male Lead" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "男主" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "男主" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "主演（男）" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rôle principal (H)" } }
-      }
-    },
-    "Lead Female" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Female Lead" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "女主" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "女主" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "主演（女）" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rôle principal (F)" } }
-      }
-    },
-    "Supporting" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Supporting" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "配角" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "配角" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "助演" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Second rôle" } }
-      }
-    },
-    "Gallery" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Poster & Fanart" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "本地图库" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "本地圖庫" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ローカル画像" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Images locales" } }
-      }
-    },
-    "Poster" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Poster:" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "封面:" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "封面:" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ポスター:" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Affiche :" } }
-      }
-    },
-    "Fanart" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Fanart:" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "背景:" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "背景:" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ファンアート:" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fanart :" } }
-      }
-    },
-    "Not Selected" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Not selected" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "未选择" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "未選擇" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "未選択" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Non sélectionné" } }
-      }
-    },
-    "Selected N Images" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "images selected" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "张已选" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "張已選" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "枚選択中" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "images sélectionnées" } }
-      }
-    },
-    "Choose" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose…" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "选择…" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "選擇…" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選択…" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisir…" } }
-      }
-    },
-    "Remove" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remove" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "移除" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "移除" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "削除" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer" } }
-      }
-    },
-    "Target Video" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Target Video" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "目标视频" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "目標視頻" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "対象動画" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vidéo cible" } }
-      }
-    },
-    "Write Title" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Write Title" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "写入标题" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "寫入標題" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "書き込むタイトル" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Titre à écrire" } }
-      }
-    },
-    "Status" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Status" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "处理状态" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "處理狀態" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "処理状況" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Statut" } }
-      }
-    },
-    "Actions" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Actions" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "操作" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "操作" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "操作" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Actions" } }
-      }
-    },
-    "Clear Done" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Clear Completed" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "清空已完成" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "清空已完成" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "完了済みを削除" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Effacer les terminés" } }
-      }
-    },
-    "Generate NFO" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Generate NFO" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "一键生成 NFO" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "一鍵生成 NFO" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "NFO を生成" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Générer les NFO" } }
-      }
-    },
-    "Remove Selected Tasks" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remove Selected Tasks" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "移除选中的任务" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "移除選中的任務" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選択したタスクを削除" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer les tâches sélectionnées" } }
-      }
-    },
-    "Auto Detect" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "(auto detect)" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "(自动识别)" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "(自動識別)" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "(自動検出)" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "(détection auto)" } }
-      }
-    },
-    "Waiting" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Waiting" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "等待" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "等待" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "待機" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En attente" } }
-      }
-    },
-    "Done" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Done" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "完成" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "完成" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "完了" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Terminé" } }
-      }
-    },
-    "status.waiting" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Waiting" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "等待处理" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "等待處理" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "待機中" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En attente" } }
-      }
-    },
-    "status.processing" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Processing…" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "处理中…" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "處理中…" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "処理中…" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En cours…" } }
-      }
-    },
-    "status.success" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "✅ Success" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "✅ 成功" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "✅ 成功" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "✅ 完了" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "✅ Succès" } }
-      }
-    },
-    "status.error" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "❌ Failed" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "❌ 失败" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "❌ 失敗" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "❌ 失敗" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "❌ Échec" } }
-      }
-    },
-    "Theme" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Theme" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "主题" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "主題" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "テーマ" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Thème" } }
-      }
-    },
-    "Language" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Language" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "语言" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "語言" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "言語" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Langue" } }
-      }
-    },
-    "Select Cover" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Select" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "选择" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "選擇" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選択" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisir" } }
-      }
-    },
-    "Extracting..." : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Extracting..." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "正在提取..." } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "正在提取..." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "抽出中..." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Extraction..." } }
-      }
-    },
-    "Auto Extract Covers" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Smart Extract" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "智能提取" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "智能提取" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "スマート抽出" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Extraction Intelligente" } }
-      }
-    },
-    "File Name" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "File Name:" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "文件名称:" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "檔案名稱:" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ファイル名:" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Nom du fichier :" } }
-      }
-    },
-    "Duration" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Duration:" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "总时长:" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "總時長:" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "再生時間:" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Durée :" } }
-      }
-    },
-    "Extract More" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Extract Deeper" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "深度提取" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "深度提取" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "さらに抽出" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Extraire plus" } }
-      }
+    "" : {
+
     },
-    "theme.system" : {
+    "%@ %lld" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "System" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "跟随系统" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "跟隨系統" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "システム" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Système" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$lld"
+          }
+        }
       }
     },
-    "theme.light" : {
+    "%@ %lld · %@ %lld" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Light" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "明亮" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "明亮" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ライト" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Clair" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$lld · %3$@ %4$lld"
+          }
+        }
       }
     },
-    "theme.dark" : {
+    "%@ %lld %@" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Dark" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "黑暗" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "黑暗" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ダーク" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sombre" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$lld %3$@"
+          }
+        }
       }
     },
-    "About MovieInfoEdit" : {
+    "%@: %@" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "About MovieInfoEdit" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关于 MovieInfoEdit" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "關於 MovieInfoEdit" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "MovieInfoEdit について" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "À propos de MovieInfoEdit" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$@"
+          }
+        }
       }
     },
     "About Description" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "An elegant batch .NFO file editor developed for macOS." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "一款专为 macOS 打造的优雅批量 .NFO 文件编辑器。" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "一款專為 macOS 打造的優雅批量 .NFO 文件編輯器。" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "macOS 向けのエレガントなバッチ .NFO ファイルエディタ。" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un élégant éditeur de fichiers .NFO par lots conçu pour macOS." } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An elegant batch .NFO file editor developed for macOS."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un élégant éditeur de fichiers .NFO par lots conçu pour macOS."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 向けのエレガントなバッチ .NFO ファイルエディタ。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一款专为 macOS 打造的优雅批量 .NFO 文件编辑器。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一款專為 macOS 打造的優雅批量 .NFO 文件編輯器。"
+          }
+        }
+      }
+    },
+    "About MovieInfoEdit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About MovieInfoEdit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À propos de MovieInfoEdit"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MovieInfoEdit について"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关于 MovieInfoEdit"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關於 MovieInfoEdit"
+          }
+        }
+      }
+    },
+    "Actions" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actions"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actions"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作"
+          }
+        }
+      }
+    },
+    "Actor Name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "氏名"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "姓名"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "姓名"
+          }
+        }
+      }
+    },
+    "Actor Name PH" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actor name"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom de l'acteur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "俳優名"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "演员姓名"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "演員姓名"
+          }
+        }
+      }
+    },
+    "Actor Role" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Role"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rôle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "役名"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "角色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "角色"
+          }
+        }
+      }
+    },
+    "Actor Role PH" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Character name"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom du personnage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャラクター名"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "饰演角色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "角色"
+          }
+        }
+      }
+    },
+    "Actors" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actors"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acteurs"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出演者"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "演员"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "演員"
+          }
+        }
+      }
+    },
+    "Add Actor" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Actor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un acteur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出演者を追加"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加演员"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加演員"
+          }
+        }
+      }
+    },
+    "Add Genre Hint" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type and press Return to add"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tapez et appuyez sur Entrée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力後Returnで追加"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入影片类型 (回车添加)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸入影片類型 (回車添加)"
+          }
+        }
+      }
+    },
+    "Add to Queue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to Queue"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter à la file"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キューに追加"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入序列"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入序列"
+          }
+        }
+      }
+    },
+    "App Language" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Language:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langue :"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ言語:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用语言:"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "應用语言:"
+          }
+        }
+      }
+    },
+    "Appearance & Lang" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance & Language"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apparence et langue"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外観と表示言語"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外观与语言"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外觀與語言"
+          }
+        }
+      }
+    },
+    "Auto Detect" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(auto detect)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(détection auto)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(自動検出)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(自动识别)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(自動識別)"
+          }
+        }
+      }
+    },
+    "Auto Extract Covers" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smart Extract"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extraction Intelligente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スマート抽出"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "智能提取"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "智能提取"
+          }
+        }
+      }
+    },
+    "Basic Info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Basic Info"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Infos de base"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "基本情報"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "基础信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "基礎信息"
+          }
+        }
+      }
+    },
+    "Cache Hint" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app records directors, genres and actors for quick autocomplete."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'app enregistre les réalisateurs, genres et actors pour la saisie automatique."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "監督・ジャンル・出演者の入力履歴を記録し、次回の入力補完に活用します。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统会自动记录导演、类型、演员等信息，下次输入时可快速补全。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系統會自動記錄導演、類型、演員等資訊，下次輸入時可快速補全。"
+          }
+        }
+      }
+    },
+    "Cache Management" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cache Management"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestion du cache"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュ管理"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缓存管理"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "緩存管理"
+          }
+        }
+      }
+    },
+    "Choose" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇…"
+          }
+        }
+      }
+    },
+    "Clear Actors" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Actors"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer acteurs"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出演者履歴を削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除历史演员"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除歷史演员"
+          }
+        }
+      }
+    },
+    "Clear All" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Clear All Records"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Tout effacer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ すべての履歴を削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ 清除所有记录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ 清除所有記錄"
+          }
+        }
+      }
+    },
+    "Clear Directors" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Directors"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer réalisateurs"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "監督履歴を削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除历史导演"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除歷史导演"
+          }
+        }
+      }
+    },
+    "Clear Done" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Completed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer les terminés"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了済みを削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空已完成"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空已完成"
+          }
+        }
+      }
+    },
+    "Clear Genres" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Genres"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer genres"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ジャンル履歴を削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除历史类型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除歷史类型"
+          }
+        }
+      }
+    },
+    "Clear Rating" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリア"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除"
+          }
+        }
+      }
+    },
+    "Country" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Country"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pays"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "制作国"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "国家地区"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "國家地區"
+          }
+        }
+      }
+    },
+    "Director" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Director"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réalisateur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "監督"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导演"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "導演"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成"
+          }
+        }
+      }
+    },
+    "Drop Videos Here" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drop video files here"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déposez des vidéos ici"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画をドロップ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖入视频文件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖入視頻文件"
+          }
+        }
+      }
+    },
+    "Duration" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durée :"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再生時間:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "总时长:"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "總時長:"
+          }
+        }
+      }
+    },
+    "Editor & Import" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éditeur"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "編集"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑与导入"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "編輯與導入"
+          }
+        }
+      }
+    },
+    "Extract More" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extract Deeper"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extraire plus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "さらに抽出"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "深度提取"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "深度提取"
+          }
+        }
+      }
+    },
+    "Extracting..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extracting..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extraction..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "抽出中..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在提取..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在提取..."
+          }
+        }
+      }
+    },
+    "Fanart" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fanart:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fanart :"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファンアート:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景:"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景:"
+          }
+        }
+      }
+    },
+    "File Name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File Name:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom du fichier :"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイル名:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件名称:"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檔案名稱:"
+          }
+        }
+      }
+    },
+    "Gallery" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poster & Fanart"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Images locales"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカル画像"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本地图库"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本地圖庫"
+          }
+        }
+      }
+    },
+    "Generate NFO" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generate NFO"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Générer les NFO"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NFO を生成"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一键生成 NFO"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一鍵生成 NFO"
+          }
+        }
+      }
+    },
+    "Genres" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genres"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genres"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ジャンル"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "类型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "類型"
+          }
+        }
+      }
+    },
+    "Import" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み込む"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "導入"
+          }
+        }
+      }
+    },
+    "Import Videos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Videos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer vidéos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画を読み込む"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入视频"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "導入視頻"
+          }
+        }
+      }
+    },
+    "Language" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langue"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语言"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "語言"
+          }
+        }
+      }
+    },
+    "Language Restart Hint" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Some native UI elements may require an app restart."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Certains éléments natifs nécessitent un redémarrage."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一部のシステムUIは再起動後に反映されます。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "部分系统原生界面需重启后完全生效。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "部分系統原生介面需重啟後完全生效。"
+          }
+        }
+      }
+    },
+    "Lead Female" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Female Lead"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rôle principal (F)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主演（女）"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "女主"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "女主"
+          }
+        }
+      }
+    },
+    "Lead Male" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Male Lead"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rôle principal (H)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主演（男）"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "男主"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "男主"
+          }
+        }
+      }
+    },
+    "Leave Empty" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leave empty"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laisser vide"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空欄のまま"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "留空"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "留空"
+          }
+        }
+      }
+    },
+    "No Extension" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No extension"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans extension"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拡張子なし"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无扩展名"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無副檔名"
+          }
+        }
+      }
+    },
+    "No Recent Files" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Recent Files"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun fichier récent"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近のファイルなし"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无最近文件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無最近文件"
+          }
+        }
+      }
+    },
+    "Not Selected" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not selected"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non sélectionné"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未選択"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未选择"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未選擇"
+          }
+        }
+      }
+    },
+    "OCR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR Extract"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extraire (OCR)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字幕抽出(OCR)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提取字幕 (OCR)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提取字幕 (OCR)"
+          }
+        }
+      }
+    },
+    "Open Recent" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Recent"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir récent"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近使った項目"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开最近"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打開最近"
+          }
+        }
+      }
+    },
+    "Plot" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plot"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synopsis"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あらすじ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剧情简介"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "劇情簡介"
+          }
+        }
+      }
+    },
+    "Poster" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poster:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche :"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ポスター:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "封面:"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "封面:"
+          }
+        }
+      }
+    },
+    "Premiered" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premiered"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Première"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公開日"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首映日期"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首映日期"
+          }
+        }
+      }
+    },
+    "Process" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Process"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traiter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "処理"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "处理"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "處理"
+          }
+        }
+      }
+    },
+    "Process Queue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queue"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キュー"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "处理序列"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "處理序列"
+          }
+        }
+      }
+    },
+    "Quick Add" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick add:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajout rapide :"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クイック追加:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷添加:"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷添加:"
+          }
+        }
+      }
+    },
+    "Rating" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rating"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "評価"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "评分"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "評分"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除"
+          }
+        }
+      }
+    },
+    "Remove from List" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from List"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retirer de la liste"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リストから削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从列表中移除"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從列表中移除"
+          }
+        }
+      }
+    },
+    "Remove Selected" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Selected"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer la sélection"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択したものを削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除所选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除所選"
+          }
+        }
+      }
+    },
+    "Remove Selected Tasks" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Selected Tasks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les tâches sélectionnées"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択したタスクを削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除选中的任务"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除選中的任務"
+          }
+        }
+      }
+    },
+    "Reveal in Finder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reveal in Finder"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher dans le Finder"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finderで表示"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Finder 中显示"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Finder 中顯示"
+          }
+        }
+      }
+    },
+    "Select Cover" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇"
+          }
+        }
+      }
+    },
+    "Select to Edit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a video on the left to start editing"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnez une vidéo à gauche pour commencer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "左側で動画を選択して編集開始"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在左侧选择视频以开始编辑"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請在左側選擇視頻以開始編輯"
+          }
+        }
+      }
+    },
+    "Selected" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionné"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择中"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已选中"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已選中"
+          }
+        }
+      }
+    },
+    "Selected Count" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnés"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択中"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已選"
+          }
+        }
+      }
+    },
+    "Selected N Images" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "images selected"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "images sélectionnées"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "枚選択中"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "张已选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "張已選"
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paramètres"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設置"
+          }
+        }
+      }
+    },
+    "Sort by Added" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sort by Added"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trier par ajout"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加順に並べ替え"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按导入顺序排序"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按導入順序排序"
+          }
+        }
+      }
+    },
+    "Sort by Name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sort by Name"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trier par nom"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前順に並べ替え"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按文件名排序"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按檔案名排序"
+          }
+        }
+      }
+    },
+    "Status" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statut"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "処理状況"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "处理状态"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "處理狀態"
+          }
+        }
+      }
+    },
+    "status.error" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "❌ Failed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "❌ Échec"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "❌ 失敗"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "❌ 失败"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "❌ 失敗"
+          }
+        }
+      }
+    },
+    "status.processing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Processing…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En cours…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "処理中…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "处理中…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "處理中…"
+          }
+        }
+      }
+    },
+    "status.success" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ Success"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ Succès"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ 完了"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ 成功"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ 成功"
+          }
+        }
+      }
+    },
+    "status.waiting" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En attente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待機中"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待处理"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待處理"
+          }
+        }
+      }
+    },
+    "Studio" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スタジオ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "工作室"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "工作室"
+          }
+        }
+      }
+    },
+    "Supporting" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supporting"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Second rôle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "助演"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "配角"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "配角"
+          }
+        }
+      }
+    },
+    "Target Video" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target Video"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidéo cible"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "対象動画"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标视频"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目標視頻"
+          }
+        }
+      }
+    },
+    "Theme" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Theme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thème"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テーマ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主題"
+          }
+        }
+      }
+    },
+    "Theme Setting" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Theme:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thème :"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テーマ設定:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主题设定:"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主題设定:"
+          }
+        }
+      }
+    },
+    "theme.dark" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sombre"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ダーク"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑暗"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑暗"
+          }
+        }
+      }
+    },
+    "theme.light" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clair"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライト"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明亮"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "明亮"
+          }
+        }
+      }
+    },
+    "theme.system" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Système"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟随系统"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟隨系統"
+          }
+        }
+      }
+    },
+    "Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titre"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タイトル"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "標題"
+          }
+        }
+      }
+    },
+    "Toggle Sidebar" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toggle Sidebar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Basculer la barre"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイドバー切替"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换侧边栏"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切換側邊栏"
+          }
+        }
+      }
+    },
+    "Videos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "videos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vidéos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本の動画"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "个视频"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "個視頻"
+          }
+        }
+      }
+    },
+    "Waiting" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En attente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待機"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待"
+          }
+        }
+      }
+    },
+    "Write Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Write Title"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titre à écrire"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "書き込むタイトル"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写入标题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "寫入標題"
+          }
+        }
+      }
+    },
+    "Year" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Year"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Année"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公開年"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年份"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年份"
+          }
+        }
       }
     }
   },
