@@ -16,7 +16,7 @@ struct MovieInfoEditApp: App {
         }
         .defaultSize(width: 1080, height: 720)
         .windowResizability(.contentMinSize)
-        .windowStyle(.hiddenTitleBar)
+        .windowToolbarStyle(.unified)
         .commands {
             CommandGroup(replacing: .appInfo) {
                 Button(L("About MovieInfoEdit")) {
@@ -26,7 +26,7 @@ struct MovieInfoEditApp: App {
                                 string: L("About Description"),
                                 attributes: [.font: NSFont.systemFont(ofSize: 11)]
                             ),
-                            NSApplication.AboutPanelOptionKey.version: "1.0.0"
+                            NSApplication.AboutPanelOptionKey.version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
                         ]
                     )
                 }
@@ -53,6 +53,10 @@ struct MovieInfoEditApp: App {
                     appState.processQueue()
                 }
                 .keyboardShortcut("r", modifiers: .command)
+                .disabled(!appState.canProcessQueue)
+                Button(L("Write History")) { appState.showingHistory = true }
+                Button(L("Check Library")) { appState.checkLibrary() }
+                Button(L("Save Session")) { appState.saveSessionNow() }
             }
         }
 

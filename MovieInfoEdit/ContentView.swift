@@ -20,10 +20,6 @@ extension View {
 }
 
 // MARK: - Localization Helper
-func L(_ key: String.LocalizationValue) -> String {
-    String(localized: key)
-}
-
 func formatDuration(_ seconds: Double) -> String {
     guard !seconds.isNaN && !seconds.isInfinite else { return "00:00" }
     let h = Int(seconds) / 3600; let m = (Int(seconds) % 3600) / 60; let s = Int(seconds) % 60
@@ -34,41 +30,6 @@ enum AppTheme: String, CaseIterable {
     case system, light, dark
     var colorScheme: ColorScheme? { switch self { case .system: return nil; case .light: return .light; case .dark: return .dark } }
     var localizedName: String { switch self { case .system: return L("theme.system"); case .light: return L("theme.light"); case .dark: return L("theme.dark") } }
-}
-
-// MARK: - Models
-struct VideoItem: Identifiable, Hashable {
-    let id = UUID(); var fileURL: URL; let addedDate = Date()
-    var fileName: String { fileURL.lastPathComponent }
-    var baseName: String { fileURL.deletingPathExtension().lastPathComponent }
-    var folderURL: URL { fileURL.deletingLastPathComponent() }
-}
-
-struct Actor: Identifiable { let id = UUID(); var name: String = ""; var role: String = "" }
-
-struct NFOData {
-    var title: String = ""; var year: String = ""; var country: String = ""; var studio: String = ""
-    var enablePremiered: Bool = false; var premieredDate: Date = Date()
-    var genres: [String] = []; var director: String = ""; var actors: [Actor] = []; var plot: String = ""
-    var rating: Double = 0.0; var posterURL: URL? = nil; var fanartURLs: [URL] = []; var targetFilename: String = ""
-}
-
-struct QueueItem: Identifiable {
-    let id = UUID(); var video: VideoItem; var nfoData: NFOData; var status: QueueStatus = .waiting; var errorMessage: String = ""
-    enum QueueStatus: String { case waiting, processing, success, error }
-}
-
-actor DropCollector { var urls: [URL] = []; func add(_ url: URL) { urls.append(url) } }
-
-struct LoadedLocalImage: Identifiable { let id = UUID(); let url: URL; let image: NSImage }
-struct ExtractedImage: Identifiable { let id = UUID(); let image: NSImage }
-
-struct ImageOption: Identifiable {
-    let id: String
-    let url: URL?
-    let image: NSImage
-    var isExtracted: Bool = false
-    var tempId: UUID? = nil
 }
 
 // MARK: - Cache Manager
@@ -139,73 +100,27 @@ class CacheManager {
 }
 
 
-// MARK: - Sandbox Access Manager
-class SandboxAccessManager {
-    static let shared = SandboxAccessManager()
-    private let bookmarkKey = "DirectoryBookmarks"
-    private var activeAccesses: [URL: Int] = [:]
-
-    /// Bookmark a directory so it can be accessed later (persists across launches)
-    func bookmarkDirectory(_ directoryURL: URL) {
-        guard directoryURL.hasDirectoryPath || (try? directoryURL.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true else { return }
-        do {
-            let data = try directoryURL.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
-            var bookmarks = UserDefaults.standard.dictionary(forKey: bookmarkKey) as? [String: Data] ?? [:]
-            bookmarks[directoryURL.path] = data
-            UserDefaults.standard.set(bookmarks, forKey: bookmarkKey)
-        } catch {}
-    }
-
-    /// Bookmark the parent directory of a file URL
-    func bookmarkParentDirectory(of fileURL: URL) {
-        let dir = fileURL.deletingLastPathComponent()
-        bookmarkDirectory(dir)
-    }
-
-    /// Start accessing the directory containing a file. Returns true if access was granted.
-    @discardableResult
-    func startAccessing(directoryOf fileURL: URL) -> Bool {
-        let dir = fileURL.deletingLastPathComponent()
-        if let count = activeAccesses[dir], count > 0 {
-            activeAccesses[dir] = count + 1
-            return true
-        }
-        // Try resolving a stored bookmark
-        let bookmarks = UserDefaults.standard.dictionary(forKey: bookmarkKey) as? [String: Data] ?? [:]
-        if let data = bookmarks[dir.path] {
-            var isStale = false
-            if let resolved = try? URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale) {
-                if isStale { bookmarkDirectory(dir) }
-                if resolved.startAccessingSecurityScopedResource() {
-                    activeAccesses[dir] = 1
-                    return true
-                }
-            }
-        }
-        // Fallback: try accessing the directory directly
-        if dir.startAccessingSecurityScopedResource() {
-            activeAccesses[dir] = 1
-            return true
-        }
-        return false
-    }
-
-    /// Stop accessing the directory containing a file.
-    func stopAccessing(directoryOf fileURL: URL) {
-        let dir = fileURL.deletingLastPathComponent()
-        guard let count = activeAccesses[dir], count > 0 else { return }
-        if count == 1 {
-            dir.stopAccessingSecurityScopedResource()
-            activeAccesses.removeValue(forKey: dir)
-        } else {
-            activeAccesses[dir] = count - 1
-        }
-    }
-}
-
 // MARK: - App State
 @Observable class AppState {
-    var importedVideos: [VideoItem] = []; var queue: [QueueItem] = []
+    var importedVideos: [VideoItem] = [] { didSet { scheduleSessionSave() } }
+    var queue: [QueueItem] = [] { didSet { scheduleSessionSave() } }
+    var drafts: [String: EditorDraft] = [:] { didSet { scheduleSessionSave() } }
+    var restoredSelection = Set<UUID>() { didSet { scheduleSessionSave() } }
+    var history: [UndoRecord] = []
+    var queuePreview: QueuePreview?
+    var showingHistory = false
+    var editorReloadRevision = 0
+    var editorReloadVideoID: UUID?
+    var libraryIssues: [UUID: Set<LibraryIssue>] = [:]
+    var isCheckingLibrary = false
+    @ObservationIgnored var restoringSession = true
+    @ObservationIgnored var libraryCheckTask: Task<Void, Never>?
+    @ObservationIgnored var sessionSaveTask: Task<Void, Never>?
+
+    init() { restoreSession() }
+    var isProcessingQueue = false
+    var accessError: String?
+    var canProcessQueue: Bool { !isProcessingQueue && queuePreview == nil && queue.contains { $0.status == .waiting } }
     var thumbnailsCache: [URL: NSImage] = [:]; var durationsCache: [URL: Double] = [:]
     enum SortOption { case added, name }
     var sortOption: SortOption = .added
@@ -214,43 +129,186 @@ class SandboxAccessManager {
     private func applySort() { if sortOption == .name { importedVideos.sort { $0.fileName.localizedStandardCompare($1.fileName) == .orderedAscending } } else { importedVideos.sort { $0.addedDate < $1.addedDate } } }
 
     func importFiles(urls: [URL]) {
-        let supportedExts = ["mp4", "mkv", "mov", "avi", "m4v", "ts", "wmv", "flv", "m2ts", "webm", "iso", "rmvb"]
-        var bookmarkedDirs = Set<URL>()
-        for url in urls {
-            if supportedExts.contains(url.pathExtension.lowercased()) {
-                if !importedVideos.contains(where: { $0.fileURL == url }) { importedVideos.append(VideoItem(fileURL: url)) }
-                let dir = url.deletingLastPathComponent()
-                if !bookmarkedDirs.contains(dir) { SandboxAccessManager.shared.bookmarkParentDirectory(of: url); bookmarkedDirs.insert(dir) }
+        var directoriesToVerify = Set<URL>()
+        var knownURLs = Set(importedVideos.map { $0.fileURL.standardizedFileURL })
+        var additions: [VideoItem] = []
+        for suppliedURL in urls {
+            let url = suppliedURL.standardizedFileURL
+            let granted = suppliedURL.startAccessingSecurityScopedResource()
+            defer { if granted { suppliedURL.stopAccessingSecurityScopedResource() } }
+            let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true
+            if isDirectory {
+                SandboxAccessManager.shared.bookmarkDirectory(url)
+                let access = SandboxAccessManager.shared.startAccessing(url)
+                defer {
+                    if access {
+                        SandboxAccessManager.shared.stopAccessing(url)
+                    }
+                }
+                let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles, .skipsPackageDescendants], errorHandler: { failedURL, error in
+                    self.accessError = failedURL.lastPathComponent + ": " + error.localizedDescription
+                    return true
+                })
+                let videoURLs = enumerator?.compactMap { $0 as? URL }.filter {
+                    isSupportedVideoURL($0) && (try? $0.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true
+                } ?? []
+                for videoURL in videoURLs where knownURLs.insert(videoURL.standardizedFileURL).inserted {
+                    additions.append(VideoItem(fileURL: videoURL))
+                }
+            } else if isSupportedVideoURL(url) {
+                SandboxAccessManager.shared.bookmarkParentDirectory(of: url)
+                directoriesToVerify.insert(url.deletingLastPathComponent().standardizedFileURL)
+                if knownURLs.insert(url).inserted {
+                    additions.append(VideoItem(fileURL: url))
+                }
             }
         }
+        importedVideos.append(contentsOf: additions)
+        for directory in directoriesToVerify.sorted(by: { $0.path.localizedStandardCompare($1.path) == .orderedAscending }) {
+            requestDirectoryAccessIfNeeded(directory)
+        }
         applySort()
+        checkLibrary()
     }
 
-    func addToQueue(videos: [VideoItem], data: NFOData) {
+    private func canReadDirectory(_ directoryURL: URL) -> Bool {
+        let opened = SandboxAccessManager.shared.startAccessing(directoryURL)
+        defer {
+            if opened {
+                SandboxAccessManager.shared.stopAccessing(directoryURL)
+            }
+        }
+        return FileManager.default.isWritableFile(atPath: directoryURL.path) && (try? FileManager.default.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])) != nil
+    }
+
+    private func requestDirectoryAccessIfNeeded(_ directoryURL: URL) {
+        guard !canReadDirectory(directoryURL) else { return }
+
+        let panel = NSOpenPanel()
+        panel.title = L("Grant Folder Access")
+        panel.message = L("Grant access to this media folder so MovieInfoEdit can read existing .nfo files and artwork next to the selected videos.")
+        panel.prompt = L("Grant Access")
+        panel.directoryURL = directoryURL
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+
+        if panel.runModal() == .OK, let grantedURL = panel.url {
+            let requested = directoryURL.standardizedFileURL.path
+            let granted = grantedURL.standardizedFileURL.path
+            guard requested == granted || requested.hasPrefix(granted + "/") else {
+                accessError = L("Choose Containing Folder")
+                return
+            }
+            SandboxAccessManager.shared.bookmarkDirectory(grantedURL)
+            if !canReadDirectory(directoryURL) { accessError = L("Folder Access Unavailable") }
+        } else {
+            accessError = L("Folder Access Unavailable")
+        }
+    }
+
+    func addToQueue(videos: [VideoItem], data: NFOData, baseline: NFOData? = nil) {
         for video in videos {
             CacheManager.shared.add(item: data.director, category: "director")
             data.genres.forEach { CacheManager.shared.add(item: $0, category: "genre") }
             data.actors.forEach { CacheManager.shared.add(item: $0.name, category: "actor") }
-            queue.append(QueueItem(video: video, nfoData: data))
+            var resolved = data
+            if let baseline {
+                var original = parseExistingNFO(for: video) ?? NFOData()
+                let artwork = discoverLocalArtwork(for: video.fileURL)
+                if original.posterURL == nil { original.posterURL = artwork.posterURL }
+                if original.fanartURLs.isEmpty { original.fanartURLs = artwork.fanartURLs }
+                resolved = data.applyingChanges(from: baseline, to: original)
+            }
+            resolved.runtimeByVideoID = data.runtimeByVideoID
+            resolved = resolved.resolvingRuntime(for: video.id)
+            // A pending task is an editable snapshot; avoid duplicate writes for one video.
+            if let index = queue.firstIndex(where: { $0.video.id == video.id && $0.status == .waiting }) {
+                queue[index].nfoData = resolved
+            } else {
+                queue.append(QueueItem(video: video, nfoData: resolved))
+            }
         }
     }
 
     func processQueue() {
+        guard canProcessQueue else { return }
+        var preview = QueuePreview()
+        var claimed = Set<String>()
+        for item in queue where item.status == .waiting {
+            do {
+                let video = importedVideos.first { $0.id == item.video.id } ?? item.video
+                let plan = try NFOStore.prepare(video: video, data: item.nfoData)
+                let destinations = plan.changes.map(\.url) + (plan.renamed ? [plan.updated.fileURL] : [])
+                let paths = destinations.map { $0.standardizedFileURL.path.lowercased() }
+                guard paths.allSatisfy({ !claimed.contains($0) }) else { throw NFOStore.WriteError(message: L("Queue Target Conflict")) }
+                claimed.formUnion(paths)
+                preview.order.append(item.id)
+                preview.plans[item.id] = plan
+            } catch { preview.errors.append(item.video.fileName + ": " + error.localizedDescription) }
+        }
+        queuePreview = preview
+    }
+
+    func previewBackupRestore(_ video: VideoItem) {
+        guard !isProcessingQueue else { return }
+        do {
+            let plan = try NFOStore.prepareBackupRestore(video: video)
+            queuePreview = QueuePreview(isBackupRestore: true, plans: [plan.id: plan], order: [plan.id])
+        } catch { accessError = error.localizedDescription }
+    }
+
+    func confirmQueuePreview() {
+        guard !isProcessingQueue, let preview = queuePreview, preview.errors.isEmpty else { return }
+        queuePreview = nil
+        isProcessingQueue = true
         Task {
-            let waitingIDs = queue.filter { $0.status == .waiting }.map { $0.id }
-            for id in waitingIDs {
-                guard let index = queue.firstIndex(where: { $0.id == id }) else { continue }
-                await MainActor.run { queue[index].status = .processing }
-                guard let currentIndex = queue.firstIndex(where: { $0.id == id }) else { continue }
-                await processItem(at: currentIndex)
+            defer { isProcessingQueue = false; saveSessionNow() }
+            for id in preview.order {
+                let index = queue.firstIndex(where: { $0.id == id && $0.status == .waiting })
+                guard (index != nil || preview.isBackupRestore), let plan = preview.plans[id] else { continue }
+                if let index { queue[index].status = .processing }
+                saveSessionNow()
+                await Task.yield()
+                var receipt = UndoRecord(plan: plan)
+                do {
+                    try SessionStore.saveRecord(receipt)
+                    history.insert(receipt, at: 0)
+                    let updated = try NFOStore.commit(plan)
+                    receipt.completed = true
+                    if let historyIndex = history.firstIndex(where: { $0.id == receipt.id }) { history[historyIndex] = receipt }
+                    // The write-ahead receipt is already durable even if this metadata update fails.
+                    do { try SessionStore.saveRecord(receipt) } catch { accessError = error.localizedDescription }
+                    if let videoIndex = importedVideos.firstIndex(where: { $0.id == updated.id }) { importedVideos[videoIndex] = updated; applySort() }
+                    if let queueIndex = queue.firstIndex(where: { $0.id == id }) { queue[queueIndex].video = updated; queue[queueIndex].status = .success }
+                    libraryIssues.removeValue(forKey: updated.id)
+                    // Keep newer editor drafts; the reviewed queue snapshot may be older than them.
+                    if preview.isBackupRestore {
+                        drafts = drafts.filter { !$0.key.components(separatedBy: ",").contains(updated.id.uuidString) }
+                        editorReloadVideoID = updated.id
+                        editorReloadRevision += 1
+                    }
+                } catch {
+                    // Keep the receipt for a possible interrupted/partial write; undo checks current bytes.
+                    if preview.isBackupRestore { accessError = error.localizedDescription }
+                    if let queueIndex = queue.firstIndex(where: { $0.id == id }) { queue[queueIndex].status = .error; queue[queueIndex].errorMessage = error.localizedDescription }
+                }
             }
         }
     }
-    
+
+    func retryFailedItems() {
+        guard !isProcessingQueue else { return }
+        for index in queue.indices where queue[index].status == .error {
+            queue[index].status = .waiting
+            queue[index].errorMessage = ""
+        }
+    }
+
     // Core Mod 3: OCR depth search parameter support
     func performOCR(on url: URL, times: [Double]) async -> String {
-        SandboxAccessManager.shared.startAccessing(directoryOf: url)
-        defer { SandboxAccessManager.shared.stopAccessing(directoryOf: url) }
+        let access = SandboxAccessManager.shared.startAccessingFileAndParent(for: url)
+        defer { SandboxAccessManager.shared.stopAccessing(access) }
         let asset = AVURLAsset(url: url)
         let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = true
@@ -263,6 +321,7 @@ class SandboxAccessManager {
         var extractedLines = [String]()
         
         for t in validTimes {
+            guard !Task.isCancelled else { break }
             let time = CMTime(seconds: t, preferredTimescale: 600)
             if let (cgImage, _) = try? await generator.image(at: time) {
                 let request = VNRecognizeTextRequest()
@@ -279,75 +338,46 @@ class SandboxAccessManager {
         return extractedLines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private func cacheThumbnail(_ image: NSImage, for url: URL) {
+        if thumbnailsCache[url] == nil, thumbnailsCache.count >= 96, let key = thumbnailsCache.keys.first {
+            thumbnailsCache.removeValue(forKey: key)
+        }
+        thumbnailsCache[url] = image
+    }
+
     func loadMetadata(for url: URL) async {
         if thumbnailsCache[url] != nil && durationsCache[url] != nil { return }
-        SandboxAccessManager.shared.startAccessing(directoryOf: url)
-        defer { SandboxAccessManager.shared.stopAccessing(directoryOf: url) }
+        let access = SandboxAccessManager.shared.startAccessingFileAndParent(for: url)
+        defer { SandboxAccessManager.shared.stopAccessing(access) }
+        if thumbnailsCache[url] == nil, let poster = discoverLocalArtwork(for: url).posterURL,
+           let image = await loadArtworkThumbnail(at: poster) { cacheThumbnail(image, for: url) }
+        guard !Task.isCancelled else { return }
         let asset = AVURLAsset(url: url)
         do {
             let durationObj = try await asset.load(.duration)
-            await MainActor.run { if !durationObj.seconds.isNaN { self.durationsCache[url] = durationObj.seconds } }
+            guard !Task.isCancelled else { return }
+            await MainActor.run { if durationObj.seconds.isFinite && durationObj.seconds >= 0 { self.durationsCache[url] = durationObj.seconds } }
             let generator = AVAssetImageGenerator(asset: asset); generator.appliesPreferredTrackTransform = true; generator.maximumSize = CGSize(width: 320, height: 320)
-            if let (cgImage, _) = try? await generator.image(at: CMTime(seconds: min(15.0, durationObj.seconds / 2.0), preferredTimescale: 600)) {
-                await MainActor.run { self.thumbnailsCache[url] = NSImage(cgImage: cgImage, size: NSZeroSize) }
+            if let (cgImage, _) = try? await generator.image(at: CMTime(seconds: durationObj.seconds.isFinite ? max(0, min(15.0, durationObj.seconds / 2.0)) : 0, preferredTimescale: 600)) {
+                guard !Task.isCancelled else { return }
+                cacheThumbnail(NSImage(cgImage: cgImage, size: NSZeroSize), for: url)
             }
         } catch {}
     }
 
     func extractMultipleCovers(from videoURL: URL, times: [Double]) async -> [ExtractedImage] {
-        SandboxAccessManager.shared.startAccessing(directoryOf: videoURL)
-        defer { SandboxAccessManager.shared.stopAccessing(directoryOf: videoURL) }
+        let access = SandboxAccessManager.shared.startAccessingFileAndParent(for: videoURL)
+        defer { SandboxAccessManager.shared.stopAccessing(access) }
         let asset = AVURLAsset(url: videoURL); let generator = AVAssetImageGenerator(asset: asset); generator.appliesPreferredTrackTransform = true; generator.requestedTimeToleranceBefore = .zero; generator.requestedTimeToleranceAfter = .zero
         guard let durationObj = try? await asset.load(.duration) else { return [] }
         var results: [ExtractedImage] = []
         for timeSec in times.filter({ $0 < durationObj.seconds }) {
+            guard !Task.isCancelled else { break }
             if let (cgImage, _) = try? await generator.image(at: CMTime(seconds: timeSec, preferredTimescale: 600)), let faceCropped = smartCropTo2x3(cgImage: cgImage) {
                 results.append(ExtractedImage(image: NSImage(cgImage: faceCropped, size: NSZeroSize)))
             }
         }
         return results
-    }
-
-    private func xmlEscape(_ string: String) -> String {
-        string.replacingOccurrences(of: "&", with: "&amp;")
-              .replacingOccurrences(of: "<", with: "&lt;")
-              .replacingOccurrences(of: ">", with: "&gt;")
-              .replacingOccurrences(of: "\"", with: "&quot;")
-              .replacingOccurrences(of: "'", with: "&apos;")
-    }
-
-    private func processItem(at index: Int) async {
-        let item = queue[index]; var video = item.video; let data = item.nfoData; let fm = FileManager.default
-        SandboxAccessManager.shared.startAccessing(directoryOf: video.fileURL)
-        defer { SandboxAccessManager.shared.stopAccessing(directoryOf: video.fileURL) }
-        if !data.targetFilename.isEmpty && data.targetFilename != video.baseName {
-            let newURL = video.folderURL.appendingPathComponent("\(data.targetFilename).\(video.fileURL.pathExtension)")
-            do { try fm.moveItem(at: video.fileURL, to: newURL); video.fileURL = newURL; await MainActor.run { if let vIdx = self.importedVideos.firstIndex(where: { $0.id == video.id }) { self.importedVideos[vIdx] = video; self.applySort() } } } catch {}
-        }
-        var xmlElements: [String] = ["<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>", "<movie>"]; let finalTitle = data.title.isEmpty ? video.baseName : data.title
-        xmlElements.append("    <title>\(xmlEscape(finalTitle))</title>")
-        if !data.year.isEmpty { xmlElements.append("    <year>\(xmlEscape(data.year))</year>") }
-        if data.enablePremiered { let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"; xmlElements.append("    <premiered>\(df.string(from: data.premieredDate))</premiered>") }
-        if data.rating > 0 { xmlElements.append("    <userrating>\(String(format: "%.1f", data.rating))</userrating>") }
-        if !data.country.isEmpty { xmlElements.append("    <country>\(xmlEscape(data.country))</country>") }
-        if !data.studio.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { xmlElements.append("    <studio>\(xmlEscape(data.studio.trimmingCharacters(in: .whitespacesAndNewlines)))</studio>") }
-        if !data.director.isEmpty { xmlElements.append("    <director>\(xmlEscape(data.director))</director>") }
-        if !data.plot.isEmpty { xmlElements.append("    <plot>\(xmlEscape(data.plot))</plot>") }
-        for genre in data.genres { xmlElements.append("    <genre>\(xmlEscape(genre))</genre>") }
-        for actor in data.actors { let cleanName = actor.name.trimmingCharacters(in: .whitespacesAndNewlines); let cleanRole = actor.role.trimmingCharacters(in: .whitespacesAndNewlines); if !cleanName.isEmpty { var actorXml = "    <actor>\n        <name>\(xmlEscape(cleanName))</name>"; if !cleanRole.isEmpty { actorXml += "\n        <role>\(xmlEscape(cleanRole))</role>" }; actorXml += "\n    </actor>"; xmlElements.append(actorXml) } }
-        let posterTargetURL = video.folderURL.appendingPathComponent("\(video.baseName)-poster.jpg"); var posterGenerated = false
-        if let posterURL = data.posterURL { if posterURL.deletingLastPathComponent().standardized == video.folderURL.standardized { xmlElements.append("    <thumb aspect=\"poster\">\(posterURL.lastPathComponent)</thumb>"); posterGenerated = false } else { try? fm.removeItem(at: posterTargetURL); do { try fm.copyItem(at: posterURL, to: posterTargetURL); posterGenerated = true } catch {} } }
-        if posterGenerated { xmlElements.append("    <thumb aspect=\"poster\">\(posterTargetURL.lastPathComponent)</thumb>") }
-        if !data.fanartURLs.isEmpty {
-            xmlElements.append("    <fanart>")
-            for (i, fanartURL) in data.fanartURLs.enumerated() {
-                if fanartURL.deletingLastPathComponent().standardized == video.folderURL.standardized { xmlElements.append("        <thumb>\(fanartURL.lastPathComponent)</thumb>") } else { let suffix = i == 0 ? "-fanart" : "-fanart\(i+1)"; let targetURL = video.folderURL.appendingPathComponent("\(video.baseName)\(suffix).\(fanartURL.pathExtension)"); try? fm.removeItem(at: targetURL); do { try fm.copyItem(at: fanartURL, to: targetURL); xmlElements.append("        <thumb>\(targetURL.lastPathComponent)</thumb>") } catch {} }
-            }
-            xmlElements.append("    </fanart>")
-        }
-        xmlElements.append("</movie>")
-        let finalXML = xmlElements.joined(separator: "\n"); let nfoURL = video.folderURL.appendingPathComponent("\(video.baseName).nfo")
-        do { try finalXML.write(to: nfoURL, atomically: true, encoding: .utf8); await MainActor.run { self.queue[index].status = .success } } catch { await MainActor.run { self.queue[index].status = .error; self.queue[index].errorMessage = "写入失败" } }
     }
 
     private func smartCropTo2x3(cgImage: CGImage) -> CGImage? {
@@ -365,6 +395,7 @@ class SandboxAccessManager {
 // MARK: - Components
 
 struct AmbilightThumbnail: View {
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     let image: NSImage?
     var width: CGFloat
     var height: CGFloat
@@ -373,6 +404,7 @@ struct AmbilightThumbnail: View {
     var body: some View {
         ZStack {
             if let image = image {
+                if !reduceTransparency {
                 // 1. Ambilight glow layer (reduced radius/scale to prevent clipping on the left edge)
                 Image(nsImage: image)
                     .resizable()
@@ -386,6 +418,7 @@ struct AmbilightThumbnail: View {
                     .saturation(1.5)
                     .scaleEffect(isStacked ? 1.05 : 1.1)
                     .offset(y: 2)
+                }
 
                 // 2. Clear Original Image Layer
                 Image(nsImage: image)
@@ -411,7 +444,6 @@ struct ThumbnailStack: View {
     var onVideoTap: ((URL) -> Void)? = nil
     @State private var isHovered = false
     @State private var hoveredIndex: Int? = nil
-    @State private var tappedIndex: Int? = nil
 
     var body: some View {
         let count = min(videos.count, 4); let isSingle = count == 1
@@ -421,6 +453,7 @@ struct ThumbnailStack: View {
             ForEach((0..<count).reversed(), id: \.self) { index in
                 let img = cache[videos[index].fileURL]
                 let isThisHovered = hoveredIndex == index
+                Button { onVideoTap?(videos[index].fileURL) } label: {
                 ZStack {
                     AmbilightThumbnail(image: img, width: cardW, height: cardH, isStacked: !isSingle)
                     Group {
@@ -446,15 +479,14 @@ struct ThumbnailStack: View {
                 .opacity(!isHovered && index == 3 ? 0 : 1)
                 .offset(x: xOffset(index: index, isHovered: isHovered, count: count), y: yOffset(index: index, isHovered: isHovered, count: count))
                 .zIndex(isThisHovered ? 10 : Double(4 - index))
-                .scaleEffect(tappedIndex == index ? 0.92 : (isThisHovered ? 1.08 : (isHovered && isSingle ? 1.05 : 1.0)), anchor: .center)
+                .scaleEffect(isThisHovered ? 1.08 : (isHovered && isSingle ? 1.05 : 1.0), anchor: .center)
                 .onHover { h in withAnimation(.easeInOut(duration: 0.2)) { hoveredIndex = h ? index : nil } }
-                .onTapGesture {
-                    withAnimation(.spring(response: 0.15, dampingFraction: 0.5)) { tappedIndex = index }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.55)) { tappedIndex = nil }
-                        onVideoTap?(videos[index].fileURL)
-                    }
                 }
+                .buttonStyle(.plain)
+                .disabled(!isHovered && index == 3)
+                .accessibilityHidden(!isHovered && index == 3)
+                .accessibilityLabel(videos[index].fileName)
+                .help(L("Quick Look"))
             }
         }
         .frame(width: 200, height: 115, alignment: .topLeading)
@@ -487,144 +519,73 @@ struct ThumbnailStack: View {
     }
 }
 
-struct VisualEffectHeader: NSViewRepresentable {
-    var material: NSVisualEffectView.Material = .titlebar; var blendingMode: NSVisualEffectView.BlendingMode = .withinWindow
-    func makeNSView(context: Context) -> NSVisualEffectView { let v = NSVisualEffectView(); v.material = material; v.blendingMode = blendingMode; v.state = .active; return v }
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
-}
-
 struct EditorHeaderView: View {
     let selectedVideos: [VideoItem]
     let cache: [URL: NSImage]
     let durationsCache: [URL: Double]
     @Binding var targetFilename: String
     var onVideoTap: ((URL) -> Void)? = nil
-    
+
     private var totalDuration: Double { selectedVideos.compactMap { durationsCache[$0.fileURL] }.reduce(0, +) }
 
     var body: some View {
-        ZStack(alignment: .top) {
-            
-            // 1. Header Background
-            // Cleaned up border logic, ensured no overlapping shadows
-            Group {
-                if #available(macOS 26.0, *) {
-                    Color.white.opacity(0.25)
-                        .glassEffect(.regular, in: .rect)
+        HStack(spacing: 16) {
+            ThumbnailStack(videos: selectedVideos, cache: cache, onVideoTap: onVideoTap)
+            VStack(alignment: .leading, spacing: 8) {
+                if selectedVideos.count == 1 {
+                    Text(L("File Name")).font(.caption).foregroundStyle(.secondary)
+                    TextField(L("No Extension"), text: $targetFilename)
+                        .textFieldStyle(.roundedBorder)
+                    Text(selectedVideos.first?.folderURL.path ?? "")
+                        .font(.caption).foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle)
                 } else {
-                    ZStack {
-                        VisualEffectHeader(material: .headerView, blendingMode: .withinWindow)
-                        Color.black.opacity(0.02) // Subtle flat tint, avoids shadow buildup
-                    }
+                    Label("\(L("Selected")) \(selectedVideos.count) \(L("Videos"))", systemImage: "checkmark.circle.fill").font(.headline)
+                    Text(L("Batch Changes Hint")).font(.caption).foregroundStyle(.secondary)
+                }
+            }.frame(maxWidth: .infinity, alignment: .leading)
+            if totalDuration > 0 {
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(L("Duration")).font(.caption).foregroundStyle(.secondary)
+                    Text(formatDuration(totalDuration)).monospacedDigit()
                 }
             }
-            .frame(height: 180, alignment: .top)
-            .ignoresSafeArea(.all, edges: .top)
-            
-            // 1.5. Top White Gradient Layer
-            LinearGradient(
-                colors: [.white, .white.opacity(0)],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .frame(height: 48)
-            .ignoresSafeArea(.all, edges: .top)
-
-            // 2. Content Layer
-            Group {
-                HStack(alignment: .center, spacing: 28) {
-                    if selectedVideos.isEmpty {
-                        ZStack(alignment: .center) {
-                            Image(systemName: "square.stack.3d.up")
-                                .font(.system(size: 40))
-                                .foregroundStyle(.tertiary)
-                                .frame(width: 160, height: 100)
-                        }
-                        .frame(width: 200, height: 115, alignment: .topLeading)
-                        
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(L("Select to Edit")).font(.headline).foregroundStyle(.secondary)
-                        }.frame(maxWidth: .infinity, alignment: .leading)
-                        
-                    } else {
-                        ThumbnailStack(videos: selectedVideos, cache: cache, onVideoTap: onVideoTap)
-                        
-                        VStack(alignment: .leading, spacing: 6) {
-                            if selectedVideos.count == 1 {
-                                Text(L("File Name")).font(.caption).foregroundStyle(.secondary)
-                                TextField(L("No Extension"), text: $targetFilename)
-                                    .textFieldStyle(.plain)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 5)
-                                    .background(Color.primary.opacity(0.06))
-                                    .clipShape(RoundedRectangle(cornerRadius: 6))
-                                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.primary.opacity(0.15), lineWidth: 1))
-                                    .font(.body)
-                            } else {
-                                Label("\(L("Selected")) \(selectedVideos.count) \(L("Videos"))", systemImage: "checkmark.circle.fill").font(.headline).foregroundStyle(.primary)
-                                Text(selectedVideos.map(\.baseName).joined(separator: "、")).font(.caption).foregroundStyle(.secondary).lineLimit(2).truncationMode(.tail)
-                            }
-                        }.frame(maxWidth: .infinity, alignment: .topLeading)
-                        
-                        if totalDuration > 0 {
-                            VStack(alignment: .trailing, spacing: 4) {
-                                Text(L("Duration")).font(.caption).foregroundStyle(.secondary)
-                                Text(formatDuration(totalDuration)).font(.headline).monospacedDigit()
-                            }
-                            .padding(.leading, 10)
-                        }
-                    }
-                }
-                // INCREASED leading padding (was 20, now 32)
-                // This ensures the ambilight blur from ThumbnailStack naturally fades
-                // before it hits the left edge, preventing the "shadow block" clipping artifact.
-                .padding(.leading, 32)
-                .padding(.trailing, 20)
-                .padding(.top, 46)
-                .padding(.bottom, 16)
-            }
-            .frame(height: 180, alignment: .top)
         }
-        // Prevents anything inside the header from casting a shadow OUTSIDE the header (into the sidebar)
-        .clipped()
+        .padding(.horizontal, 20).padding(.vertical, 8)
+        .background(.bar)
     }
 }
-
-
 
 @ViewBuilder
 private func InteractiveImageCard(image: NSImage, width: CGFloat, height: CGFloat, isHovered: Bool, isSelected: Bool, onHoverChange: @escaping (Bool) -> Void, onAction: @escaping () -> Void) -> some View {
     ZStack(alignment: .center) {
         Image(nsImage: image).resizable().aspectRatio(contentMode: .fill).frame(width: width, height: height).clipShape(RoundedRectangle(cornerRadius: 10)).shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2).overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor, lineWidth: (isHovered || isSelected) ? 3 : 0))
-        if isHovered { Button(isSelected ? L("Remove") : L("Select Cover"), action: onAction).buttonStyle(.glass).transition(.opacity) }
+        Button(isSelected ? L("Remove") : L("Select Cover"), action: onAction)
+            .buttonStyle(.glass).opacity(isHovered ? 1 : 0.8)
+            .accessibilityLabel(isSelected ? L("Remove") : L("Select Cover"))
     }.onHover { hover in withAnimation(.easeInOut(duration: 0.2)) { onHoverChange(hover) } }
 }
 
 struct GallerySection: View {
     @Binding var nfoData: NFOData; var videoURL: URL?
     @State private var loadedLocalImages: [LoadedLocalImage] = []
+    @State private var loadedVideoURL: URL?
     
     var body: some View {
-        GroupBox(label: Label(L("Gallery"), systemImage: "photo.on.rectangle").font(.headline)) {
+        Section(header: Label(L("Gallery"), systemImage: "photo.on.rectangle").font(.headline)) {
             VStack(alignment: .leading, spacing: 12) { SmartPosterPicker(posterURL: $nfoData.posterURL, videoURL: videoURL, loadedLocalImages: $loadedLocalImages); Divider(); FanartPicker(fanartURLs: $nfoData.fanartURLs, videoURL: videoURL, loadedLocalImages: loadedLocalImages) }.padding(.top, 8)
         }
-        // Swift 6 Compatibility
-        .onChange(of: videoURL) { oldURL, newURL in loadLocalImages() }
-        .onAppear { loadLocalImages() }
-    }
-    
-    private func loadLocalImages() {
-        guard let url = videoURL else { loadedLocalImages = []; return }
-        let folder = url.deletingLastPathComponent(); let baseName = url.deletingPathExtension().lastPathComponent
-        Task {
-            SandboxAccessManager.shared.startAccessing(directoryOf: url)
-            defer { SandboxAccessManager.shared.stopAccessing(directoryOf: url) }
-            if let files = try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil) {
-                let matchedURLs = files.filter { ["jpg", "jpeg", "png", "webp"].contains($0.pathExtension.lowercased()) && $0.lastPathComponent.contains(baseName) }.sorted { $0.lastPathComponent < $1.lastPathComponent }
-                var loaded: [LoadedLocalImage] = []
-                for file in matchedURLs { if let data = try? Data(contentsOf: file), let img = NSImage(data: data) { loaded.append(LoadedLocalImage(url: file, image: img)) } }
-                await MainActor.run { self.loadedLocalImages = loaded }
-            } else { await MainActor.run { self.loadedLocalImages = [] } }
+        .task(id: [videoURL, nfoData.posterURL].compactMap { $0 } + nfoData.fanartURLs) {
+            if loadedVideoURL != videoURL { loadedLocalImages = []; loadedVideoURL = videoURL }
+            var urls = videoURL.map { discoverLocalArtwork(for: $0).images } ?? []
+            for url in [nfoData.posterURL].compactMap({ $0 }) + nfoData.fanartURLs where !urls.contains(url) { urls.append(url) }
+            loadedLocalImages.removeAll { !urls.contains($0.url) }
+            for url in urls where !loadedLocalImages.contains(where: { $0.url == url }) {
+                guard !Task.isCancelled else { return }
+                if let image = await loadArtworkThumbnail(at: url) {
+                    guard !Task.isCancelled else { return }
+                    loadedLocalImages.append(LoadedLocalImage(url: url, image: image))
+                }
+            }
         }
     }
 }
@@ -632,20 +593,18 @@ struct GallerySection: View {
 struct SmartPosterPicker: View {
     @Binding var posterURL: URL?; let videoURL: URL?; @Binding var loadedLocalImages: [LoadedLocalImage]; @Environment(AppState.self) private var appState
     @State private var extractedImages: [ExtractedImage] = []; @State private var isExtracting = false; @State private var hoveredID: String? = nil; @State private var isSelectingFile = false; @State private var extractionPhase = 0
+    @State private var extractionTask: Task<Void, Never>?
     @State private var previewSelectedID: String? = nil
     @State private var savedExtractedURLs: [UUID: URL] = [:]
     
     private var sortedOptions: [ImageOption] {
-        var options: [ImageOption] = loadedLocalImages.map { ImageOption(id: $0.url.absoluteString, url: $0.url, image: $0.image, isExtracted: false) }
+        var options: [ImageOption] = loadedLocalImages.filter { !savedExtractedURLs.values.contains($0.url) }.map { ImageOption(id: $0.url.absoluteString, url: $0.url, image: $0.image, isExtracted: false) }
         for ext in extractedImages {
             if let savedURL = savedExtractedURLs[ext.id] { options.append(ImageOption(id: ext.id.uuidString, url: savedURL, image: ext.image, isExtracted: true, tempId: ext.id)) }
             else { options.append(ImageOption(id: ext.id.uuidString, url: nil, image: ext.image, isExtracted: true, tempId: ext.id)) }
         }
-        if let purl = posterURL, !options.contains(where: { $0.url == purl }) {
-            if let data = try? Data(contentsOf: purl), let img = NSImage(data: data) { options.append(ImageOption(id: purl.absoluteString, url: purl, image: img, isExtracted: false)) }
-        }
         let activeID = previewSelectedID ?? (posterURL != nil ? options.first(where: {$0.url == posterURL})?.id : nil)
-        return options.sorted { a, b in if a.id == activeID { return true }; if b.id == activeID { return false }; return false }
+        return options.sorted { $0.id == activeID && $1.id != activeID }
     }
 
     var body: some View {
@@ -658,10 +617,9 @@ struct SmartPosterPicker: View {
                 if posterURL != nil { Button(L("Remove")) { removePoster() }.foregroundStyle(.red).buttonStyle(.borderless) }
             }
             if !sortedOptions.isEmpty {
-                let isAnySelected = posterURL != nil
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: isAnySelected ? -100 : 16) {
-                        ForEach(Array(sortedOptions.enumerated()), id: \.element.id) { index, option in
+                    LazyHStack(spacing: 16) {
+                        ForEach(sortedOptions) { option in
                             let isSelected = posterURL != nil && option.url == posterURL
                             let isAnimatingToSelect = previewSelectedID == option.id
                             InteractiveImageCard(image: option.image, width: 100, height: 150, isHovered: hoveredID == option.id, isSelected: isSelected || isAnimatingToSelect, onHoverChange: { hover in hoveredID = hover ? option.id : nil }) {
@@ -669,55 +627,60 @@ struct SmartPosterPicker: View {
                                     withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) { removePoster() }
                                 } else {
                                     withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) { previewSelectedID = option.id }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                            if option.isExtracted { saveImageAsPoster(option) } else { posterURL = option.url }
-                                            previewSelectedID = nil
-                                        }
-                                    }
+                                    if option.isExtracted { saveImageAsPoster(option) } else { posterURL = option.url }
+                                    previewSelectedID = nil
                                 }
-                            }.zIndex(isSelected || isAnimatingToSelect ? 10 : 1).scaleEffect(isAnySelected && !isSelected ? 0.5 : 1.0).opacity(isAnySelected && !isSelected ? 0 : 1)
-                            // Core Mod 4: Cascade animation
-                            .transition(.asymmetric(
-                                insertion: .scale(scale: 0.5).combined(with: .opacity).animation(.spring(response: 0.4, dampingFraction: 0.6).delay(Double(index) * 0.05)),
-                                removal: .opacity
-                            ))
+                            }
+                            .accessibilityLabel(option.url?.lastPathComponent ?? L("Poster"))
+
                         }
                     }.padding(.vertical, 8).padding(.horizontal, 4).animation(.spring(response: 0.4, dampingFraction: 0.7), value: posterURL)
                 }.frame(height: 170)
             }
         }
-        .fileImporter(isPresented: $isSelectingFile, allowedContentTypes: [.image], allowsMultipleSelection: false) { result in if case .success(let urls) = result { posterURL = urls.first } }
-        .onChange(of: videoURL) { oldURL, newURL in extractedImages = []; extractionPhase = 0; savedExtractedURLs.removeAll() }
+        .fileImporter(isPresented: $isSelectingFile, allowedContentTypes: [.image], allowsMultipleSelection: false) { result in
+            if case .success(let urls) = result, let url = urls.first {
+                SandboxAccessManager.shared.bookmarkParentDirectory(of: url)
+                posterURL = url
+            }
+        }
+        .onChange(of: videoURL) { _, _ in
+            extractionTask?.cancel()
+            extractionTask = nil
+            isExtracting = false
+            extractedImages = []
+            extractionPhase = 0
+            previewSelectedID = nil
+            savedExtractedURLs.removeAll()
+        }
+        .onDisappear { extractionTask?.cancel() }
     }
 
     private func startSmartExtraction() {
         guard let url = videoURL else { return }; isExtracting = true
         let times: [Double] = extractionPhase == 0 ? [5.0, 10.0, 15.0, 20.0, 30.0, 45.0, 60.0] : [90.0 + Double(extractionPhase - 1) * 120.0, 120.0 + Double(extractionPhase - 1) * 120.0, 180.0 + Double(extractionPhase - 1) * 120.0, 300.0 + Double(extractionPhase - 1) * 120.0]
-        Task {
+        extractionTask = Task {
             let images = await appState.extractMultipleCovers(from: url, times: times)
+            guard !Task.isCancelled, videoURL == url else { return }
             await MainActor.run { if extractionPhase == 0 { self.extractedImages = images } else { self.extractedImages.append(contentsOf: images) }; self.isExtracting = false; self.extractionPhase += 1 }
         }
     }
 
     private func saveImageAsPoster(_ option: ImageOption) {
-        guard let videoURL = videoURL else { return }; let destURL = videoURL.deletingLastPathComponent().appendingPathComponent("\(videoURL.deletingPathExtension().lastPathComponent)-poster.jpg")
-        guard let cgImage = option.image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return }
-        if let data = NSBitmapImageRep(cgImage: cgImage).representation(using: .jpeg, properties: [.compressionFactor: 0.85]) {
-            try? data.write(to: destURL); if let tempId = option.tempId { savedExtractedURLs[tempId] = destURL }; self.posterURL = destURL
-            if let idx = loadedLocalImages.firstIndex(where: { $0.url == destURL }) { loadedLocalImages[idx] = LoadedLocalImage(url: destURL, image: option.image) } else { loadedLocalImages.append(LoadedLocalImage(url: destURL, image: option.image)) }
-            withAnimation { extractedImages.removeAll(where: { $0.id == option.tempId }) }
-        }
+        guard let cgImage = option.image.cgImage(forProposedRect: nil, context: nil, hints: nil),
+              let bytes = NSBitmapImageRep(cgImage: cgImage).representation(using: .jpeg, properties: [.compressionFactor: 0.85]) else { return }
+        // Keep staged artwork alive for queued snapshots. Never overwrite a media file on selection.
+        let destination = SessionStore.artworkDirectory.appendingPathComponent(UUID().uuidString + ".jpg")
+        do {
+            try FileManager.default.createDirectory(at: SessionStore.artworkDirectory, withIntermediateDirectories: true)
+            try bytes.write(to: destination, options: .atomic)
+            if let id = option.tempId { savedExtractedURLs[id] = destination }
+            posterURL = destination
+        } catch { appState.accessError = error.localizedDescription }
     }
 
-    private func removePoster() {
-        if let url = posterURL, savedExtractedURLs.values.contains(url) {
-            try? FileManager.default.removeItem(at: url)
-            loadedLocalImages.removeAll { $0.url == url }
-            savedExtractedURLs = savedExtractedURLs.filter { $0.value != url }
-        }
-        posterURL = nil
-    }
+    private func removePoster() { posterURL = nil }
+
 }
 
 struct FanartPicker: View {
@@ -725,8 +688,7 @@ struct FanartPicker: View {
     @State private var isSelecting = false; @State private var hoveredID: String? = nil
     
     private var sortedOptions: [ImageOption] {
-        var options: [ImageOption] = loadedLocalImages.map { ImageOption(id: $0.url.absoluteString, url: $0.url, image: $0.image, isExtracted: false) }
-        for url in fanartURLs { if !options.contains(where: { $0.url == url }) { if let data = try? Data(contentsOf: url), let img = NSImage(data: data) { options.append(ImageOption(id: url.absoluteString, url: url, image: img, isExtracted: false)) } } }
+        let options: [ImageOption] = loadedLocalImages.map { ImageOption(id: $0.url.absoluteString, url: $0.url, image: $0.image, isExtracted: false) }
         return options.sorted { a, b in
             let aSel = a.url != nil && fanartURLs.contains(a.url!); let bSel = b.url != nil && fanartURLs.contains(b.url!)
             if aSel && !bSel { return true }; if !aSel && bSel { return false }; return false
@@ -742,7 +704,7 @@ struct FanartPicker: View {
             }
             if !sortedOptions.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
+                    LazyHStack(spacing: 16) {
                         ForEach(sortedOptions) { option in
                             let isSelected = option.url.map { fanartURLs.contains($0) } ?? false
                             InteractiveImageCard(image: option.image, width: 160, height: 90, isHovered: hoveredID == option.id, isSelected: isSelected, onHoverChange: { hover in hoveredID = hover ? option.id : nil }) {
@@ -753,13 +715,65 @@ struct FanartPicker: View {
                 }.frame(height: 110)
             }
         }
-        .fileImporter(isPresented: $isSelecting, allowedContentTypes: [.image], allowsMultipleSelection: true) { result in if case .success(let urls) = result { let newURLs = urls.filter { !fanartURLs.contains($0) }; fanartURLs.append(contentsOf: newURLs) } }
+        .fileImporter(isPresented: $isSelecting, allowedContentTypes: [.image], allowsMultipleSelection: true) { result in
+            if case .success(let urls) = result {
+                urls.forEach { SandboxAccessManager.shared.bookmarkParentDirectory(of: $0) }
+                let newURLs = urls.filter { !fanartURLs.contains($0) }
+                fanartURLs.append(contentsOf: newURLs)
+            }
+        }
+    }
+}
+
+/// All editor rows share label and accessory columns, including rows without actions.
+private enum EditorMetrics {
+    static let labelWidth: CGFloat = 120
+    static let accessoryWidth: CGFloat = 104
+    static let spacing: CGFloat = 12
+}
+
+struct EditorFieldRow<Content: View, Accessory: View>: View {
+    let label: String
+    @ViewBuilder var content: () -> Content
+    @ViewBuilder var accessory: () -> Accessory
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: EditorMetrics.spacing) {
+            Text(label).foregroundStyle(.secondary)
+                .frame(width: EditorMetrics.labelWidth, alignment: .trailing)
+            content().frame(maxWidth: .infinity, alignment: .leading)
+            accessory().frame(width: EditorMetrics.accessoryWidth, alignment: .trailing)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 
 struct LabeledTextField: View {
-    let label: String; @Binding var text: String
-    var body: some View { HStack(spacing: 12) { Text(label).foregroundStyle(.secondary).frame(width: 50, alignment: .trailing); TextField(label, text: $text).textFieldStyle(.roundedBorder) } }
+    let label: String
+    @Binding var text: String
+    var options: [String] = []
+
+    var body: some View {
+        EditorFieldRow(label: label) {
+            TextField(label, text: $text, axis: .vertical)
+                .labelsHidden().textFieldStyle(.roundedBorder).lineLimit(1...3)
+        } accessory: {
+            if !options.isEmpty {
+                Menu {
+                    Button(L("Leave Empty")) { text = "" }
+                    Divider()
+                    ForEach(options, id: \.self) { value in
+                        Button(value) { text = value }
+                    }
+                } label: { Text(L("Common Options")) }
+                .menuStyle(.borderlessButton)
+                .help(label + " · " + L("Common Options"))
+                .accessibilityLabel(label + " · " + L("Common Options"))
+            } else {
+                Color.clear.frame(height: 1).accessibilityHidden(true)
+            }
+        }
+    }
 }
 
 struct DirectorField: View {
@@ -770,7 +784,7 @@ struct DirectorField: View {
         VStack(alignment: .leading, spacing: 6) {
             LabeledTextField(label: L("Director"), text: $director)
             if !cachedDirectors.isEmpty {
-                HStack(alignment: .center, spacing: 12) { Color.clear.frame(width: 50); ScrollView(.horizontal, showsIndicators: false) { HStack(spacing: 6) { ForEach(cachedDirectors, id: \.self) { name in ChipButton(title: name) { withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { director = name } }.matchedGeometryEffect(id: name, in: tagAnimation) } }.padding(.vertical, 8).padding(.horizontal, 2) } }
+                HStack(alignment: .center, spacing: 12) { Color.clear.frame(width: EditorMetrics.labelWidth); ScrollView(.horizontal, showsIndicators: false) { HStack(spacing: 6) { ForEach(cachedDirectors, id: \.self) { name in ChipButton(title: name) { withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { director = name } }.matchedGeometryEffect(id: name, in: tagAnimation) } }.padding(.vertical, 8).padding(.horizontal, 2) } }
             }
         }
     }
@@ -788,11 +802,18 @@ struct GenreField: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 12) { Text(L("Genres")).foregroundStyle(.secondary).frame(width: 50, alignment: .trailing); TextField(L("Add Genre Hint"), text: $currentInput).textFieldStyle(.roundedBorder).onSubmit { let t = currentInput.trimmingCharacters(in: .whitespacesAndNewlines); if !t.isEmpty && !genres.contains(t) { withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { genres.append(t) } }; currentInput = "" } }
-            if !genres.isEmpty { HStack(alignment: .center, spacing: 12) { Color.clear.frame(width: 50); ScrollView(.horizontal, showsIndicators: false) { HStack(spacing: 6) { ForEach(genres, id: \.self) { genre in ActiveTag(title: genre) { withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { genres.removeAll { $0 == genre } } }.matchedGeometryEffect(id: genre, in: tagAnimation) } }.padding(.vertical, 8).padding(.horizontal, 2) } } }
+            EditorFieldRow(label: L("Genres")) {
+                TextField(L("Add Genre Hint"), text: $currentInput).textFieldStyle(.roundedBorder).onSubmit {
+                    let value = currentInput.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !value.isEmpty && !genres.contains(value) { genres.append(value) }
+                    currentInput = ""
+                }
+            } accessory: { Color.clear.frame(height: 1).accessibilityHidden(true) }
+
+            if !genres.isEmpty { HStack(alignment: .center, spacing: 12) { Color.clear.frame(width: EditorMetrics.labelWidth); ScrollView(.horizontal, showsIndicators: false) { HStack(spacing: 6) { ForEach(genres, id: \.self) { genre in ActiveTag(title: genre) { withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { genres.removeAll { $0 == genre } } }.matchedGeometryEffect(id: genre, in: tagAnimation) } }.padding(.vertical, 8).padding(.horizontal, 2) } } }
             if !suggestions.isEmpty {
                 HStack(alignment: .top, spacing: 12) {
-                    Text(L("Quick Add")).font(.caption).foregroundStyle(.secondary).frame(width: 50, alignment: .trailing).padding(.top, 4)
+                    Text(L("Quick Add")).font(.caption).foregroundStyle(.secondary).frame(width: EditorMetrics.labelWidth, alignment: .trailing).padding(.top, 4)
                     ScrollView(.horizontal, showsIndicators: false) { VStack(alignment: .leading, spacing: 6) { HStack(spacing: 6) { ForEach(suggestions.prefix(15), id: \.self) { g in ChipButton(title: g) { withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { genres.append(g) } }.matchedGeometryEffect(id: g, in: tagAnimation) } }; if suggestions.count > 15 { HStack(spacing: 6) { ForEach(Array(suggestions.dropFirst(15)), id: \.self) { g in ChipButton(title: g) { withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { genres.append(g) } }.matchedGeometryEffect(id: g, in: tagAnimation) } } } }.padding(.vertical, 8).padding(.horizontal, 2) }
                 }
             }
@@ -801,12 +822,27 @@ struct GenreField: View {
 }
 
 struct ActorRow: View {
-    @Binding var actor: Actor; let onDelete: () -> Void
+    @Binding var actor: Actor
+    let onDelete: () -> Void
     var body: some View {
-        VStack(spacing: 6) {
-            HStack(spacing: 8) { Text(L("Actor Name")).foregroundStyle(.secondary).frame(width: 40, alignment: .trailing); TextField(L("Actor Name PH"), text: $actor.name).textFieldStyle(.roundedBorder); Menu { ForEach(Array(CacheManager.shared.getSorted(category: "actor").prefix(10)), id: \.self) { ca in Button(ca) { actor.name = ca } } } label: { Image(systemName: "clock.arrow.circlepath").foregroundStyle(.secondary) }.menuStyle(.borderlessButton).frame(width: 28); Button(action: onDelete) { Image(systemName: "minus.circle.fill").foregroundStyle(.red) }.buttonStyle(.plain) }
-            HStack(spacing: 8) { Text(L("Actor Role")).foregroundStyle(.secondary).frame(width: 40, alignment: .trailing); TextField(L("Actor Role PH"), text: $actor.role).textFieldStyle(.roundedBorder); Menu { Button(L("Lead Male")) { actor.role = L("Lead Male") }; Button(L("Lead Female")) { actor.role = L("Lead Female") }; Button(L("Supporting")) { actor.role = L("Supporting") } } label: { Image(systemName: "list.bullet.circle").foregroundStyle(.secondary) }.menuStyle(.borderlessButton).frame(width: 28); Color.clear.frame(width: 28, height: 1) }
-        }.padding(10).background(Color(NSColor.controlBackgroundColor)).clipShape(RoundedRectangle(cornerRadius: 8))
+        VStack(spacing: 8) {
+            EditorFieldRow(label: L("Actor Name")) {
+                TextField(L("Actor Name PH"), text: $actor.name).textFieldStyle(.roundedBorder)
+            } accessory: {
+                HStack {
+                    Menu {
+                        ForEach(Array(CacheManager.shared.getSorted(category: "actor").prefix(10)), id: \.self) { name in
+                            Button(name) { actor.name = name }
+                        }
+                    } label: { Image(systemName: "clock.arrow.circlepath") }
+                    .menuStyle(.borderlessButton).help(L("Actor Name"))
+                    Button(role: .destructive, action: onDelete) { Image(systemName: "minus.circle") }
+                        .buttonStyle(.borderless).help(L("Remove"))
+                }
+            }
+            LabeledTextField(label: L("Actor Role"), text: $actor.role,
+                             options: [L("Lead Male"), L("Lead Female"), L("Supporting")])
+        }.padding(.vertical, 8)
     }
 }
 
@@ -815,95 +851,144 @@ struct ChipButton: View {
     var body: some View { Button(action: action) { Text(title).font(.caption).padding(.horizontal, 10).padding(.vertical, 4).background(isHovered ? Color.accentColor : Color.secondary.opacity(0.12)).foregroundStyle(isHovered ? Color.white : Color.primary).clipShape(Capsule()).scaleEffect(isHovered ? 1.05 : 1.0).animation(.spring(response: 0.25, dampingFraction: 0.7), value: isHovered) }.buttonStyle(.plain).onHover { hover in isHovered = hover } }
 }
 
-struct PillPicker: View {
-    @Binding var selection: Int; let queueCount: Int; @Namespace private var animation
-    var body: some View { HStack(spacing: 0) { pillButton(title: L("Editor & Import"), tag: 0); pillButton(title: "\(L("Process Queue")) (\(queueCount))", tag: 1) }.padding(4).background(.regularMaterial, in: Capsule()).overlay(Capsule().stroke(Color.primary.opacity(0.1), lineWidth: 0.5)).frame(width: 280) }
-    @ViewBuilder private func pillButton(title: String, tag: Int) -> some View { Button { withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { selection = tag } } label: { Text(title).font(.system(size: 13, weight: selection == tag ? .medium : .regular)).foregroundStyle(selection == tag ? .primary : .secondary).frame(maxWidth: .infinity).padding(.vertical, 6).background { if selection == tag { Capsule().fill(Color(NSColor.controlColor)).shadow(color: .black.opacity(0.1), radius: 2, y: 1).matchedGeometryEffect(id: "ACTIVETAB", in: animation) } }.contentShape(Capsule()) }.buttonStyle(.plain) }
-}
-
 struct EditorDetailView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(AppState.self) private var appState; @Binding var selectedVideoIDs: Set<UUID>;
+    @State private var editingIDs = Set<UUID>()
+    @State private var selectionBaseline = NFOData()
     @State private var nfoTemplate = NFOData(); @State private var currentGenreInput: String = ""; @State private var isOCRExtracting: Bool = false; let addQueueNotifier = NotificationCenter.default.publisher(for: .init("TriggerAddToQueue"))
-    let years = Array(1900...Calendar.current.component(.year, from: Date()) + 5).reversed(); let presetCountries = ["China", "Hongkong", "Taiwan", "US", "Japan", "Korean", "UK", "France", "Germany"]
     private var selectedVideos: [VideoItem] { appState.importedVideos.filter { selectedVideoIDs.contains($0.id) } }
     
     // Core Mod 4: Deep track OCR status
+    @State private var runtimeTask: Task<Void, Never>?
+    @State private var isReadingRuntime = false
+    private var commonYears: [String] { (1900...(Calendar.current.component(.year, from: Date()) + 2)).reversed().map(String.init) }
+    private var commonCountries: [String] {
+        [L("China Mainland"), L("Hong Kong"), L("Taiwan"), L("United States"), L("Japan"), L("South Korea"),
+         L("United Kingdom"), L("France"), L("Germany"), L("Italy"), L("Spain"), L("Canada"), L("Australia"), L("India"), L("Thailand")]
+    }
+    @State private var metadataTask: Task<Void, Never>?
+    @State private var ocrTask: Task<Void, Never>?
     @State private var ocrPhase = 0
     @State private var previewURL: URL?
 
     var body: some View {
-        ZStack(alignment: .top) {
-            ScrollView { formContent.padding().padding(.top, 178) }
-            // Header rendered naturally in ZStack, without clipping anomalies
-            EditorHeaderView(
-                selectedVideos: selectedVideos,
-                cache: appState.thumbnailsCache,
-                durationsCache: appState.durationsCache,
-                targetFilename: $nfoTemplate.targetFilename,
-                onVideoTap: { url in
-                    previewURL = url
-                }
-            )
-
-            // Floating "Add to Queue" button
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Group {
-                        if #available(macOS 26.0, *) {
-                            Button { submitToQueue() } label: {
-                                Label(L("Add to Queue"), systemImage: "arrow.right.square.fill")
-                                    .foregroundStyle(.white)
-                            }
-                            .glassEffect(.regular.tint(.accentColor).interactive())
-                            .controlSize(.large)
-                            .disabled(selectedVideoIDs.isEmpty)
-                            .keyboardShortcut(.return, modifiers: [.command])
-                        } else if #available(macOS 15.0, *) {
-                            Button { submitToQueue() } label: {
-                                Label(L("Add to Queue"), systemImage: "arrow.right.square.fill")
-                            }
-                            .buttonStyle(.borderedProminent).buttonBorderShape(.capsule).controlSize(.large)
-                            .disabled(selectedVideoIDs.isEmpty)
-                            .keyboardShortcut(.return, modifiers: [.command])
-                        } else {
-                            Button { submitToQueue() } label: {
-                                Label(L("Add to Queue"), systemImage: "arrow.right.square.fill")
-                                    .padding(.horizontal, 24).padding(.vertical, 8)
-                            }
-                            .buttonStyle(.borderedProminent).clipShape(Capsule())
-                            .disabled(selectedVideoIDs.isEmpty)
-                            .keyboardShortcut(.return, modifiers: [.command])
-                        }
+        Group {
+            if selectedVideos.isEmpty {
+                ContentUnavailableView(L("Select to Edit"), systemImage: "film.stack",
+                                       description: Text(L("Editor Empty Hint")))
+            } else {
+                formContent
+                    .safeAreaInset(edge: .top, spacing: 0) {
+                        EditorHeaderView(selectedVideos: selectedVideos, cache: appState.thumbnailsCache,
+                                         durationsCache: appState.durationsCache, targetFilename: $nfoTemplate.targetFilename,
+                                         onVideoTap: { previewURL = $0 })
                     }
-                    .shadow(color: .black.opacity(0.15), radius: 8, y: 4)
-                }
-                .padding(.trailing, 24)
-                .padding(.bottom, 20)
+                    .safeAreaInset(edge: .bottom) {
+                        HStack {
+                            Text("\(selectedVideos.count) \(L("Videos"))").font(.caption).foregroundStyle(.secondary)
+                            Spacer()
+                            Button(action: submitToQueue) {
+                                Label(L("Add to Queue"), systemImage: "text.badge.plus")
+                            }
+                            .buttonStyle(.glassProminent).controlSize(.large)
+                            .disabled(isReadingRuntime)
+                            .keyboardShortcut(.return, modifiers: [.command])
+                        }.padding(12).background(.bar)
+                    }
             }
         }
-        .quickLookPreview($previewURL)
+        .transaction { if reduceMotion { $0.animation = nil; $0.disablesAnimations = true } }
+        .scopedQuickLookPreview($previewURL)
         .onReceive(addQueueNotifier) { _ in submitToQueue() }
-        .onChange(of: selectedVideoIDs) { oldSelection, newSelection in
-            ocrPhase = 0 // Reset depth search on video change
+        .onChange(of: selectedVideoIDs, initial: true) { _, newSelection in
+            runtimeTask?.cancel()
+            isReadingRuntime = false
+            ocrTask?.cancel()
+            isOCRExtracting = false
+            ocrPhase = 0
+            appState.saveDraft(nfoTemplate, baseline: selectionBaseline, ids: editingIDs)
+            editingIDs = newSelection
             handleSelectionChange(newSelection)
+            if let draft = appState.drafts[AppState.draftKey(newSelection)] {
+                let details = nfoTemplate.details
+                nfoTemplate = draft.data
+                selectionBaseline = draft.baseline
+                if nfoTemplate.details == nil { nfoTemplate.details = details }
+                if selectionBaseline.details == nil { selectionBaseline.details = details }
+            }
         }
+        .onChange(of: nfoTemplate) { _, data in appState.saveDraft(data, baseline: selectionBaseline, ids: editingIDs) }
+        .onChange(of: appState.editorReloadRevision) { _, _ in
+            if let id = appState.editorReloadVideoID, selectedVideoIDs.contains(id) { handleSelectionChange(selectedVideoIDs) }
+        }
+        .onDisappear { runtimeTask?.cancel(); isReadingRuntime = false; metadataTask?.cancel(); ocrTask?.cancel(); appState.saveDraft(nfoTemplate, baseline: selectionBaseline, ids: editingIDs); appState.saveSessionNow() }
     }
 
     private var formContent: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            GroupBox(label: Label(L("Basic Info"), systemImage: "info.circle").font(.headline)) {
+        Form {
+            Section(header: Label(L("Basic Info"), systemImage: "info.circle").font(.headline)) {
                 VStack(alignment: .leading, spacing: 12) {
                     LabeledTextField(label: L("Title"), text: $nfoTemplate.title)
-                    HStack(spacing: 12) { Text(L("Year")).foregroundStyle(.secondary).frame(width: 50, alignment: .trailing); Picker("", selection: $nfoTemplate.year) { Text(L("Leave Empty")).tag(""); ForEach(years, id: \.self) { year in Text(String(year)).tag(String(year)) } }.pickerStyle(.menu).frame(width: 100); Text(L("Country")).foregroundStyle(.secondary).frame(width: 70, alignment: .trailing); Picker("", selection: $nfoTemplate.country) { Text(L("Leave Empty")).tag(""); ForEach(presetCountries, id: \.self) { c in Text(c).tag(c) } }.pickerStyle(.menu).frame(width: 110); Spacer() }
-                    HStack(spacing: 12) { Text(L("Premiered")).foregroundStyle(.secondary).frame(width: 50, alignment: .trailing); Toggle("", isOn: $nfoTemplate.enablePremiered).labelsHidden(); if nfoTemplate.enablePremiered { DatePicker("", selection: $nfoTemplate.premieredDate, displayedComponents: .date).labelsHidden().onChange(of: nfoTemplate.premieredDate) { oldDate, newDate in nfoTemplate.year = String(Calendar.current.component(.year, from: newDate)) } } else { Text(L("Not Selected")).font(.caption).foregroundStyle(.tertiary) }; Spacer() }
+                    LabeledTextField(label: L("Year"), text: $nfoTemplate.year, options: commonYears)
+                    LabeledTextField(label: L("Country"), text: $nfoTemplate.country, options: commonCountries)
+                    EditorFieldRow(label: L("Premiered")) {
+                        Toggle(L("Premiered"), isOn: $nfoTemplate.enablePremiered).labelsHidden()
+                    } accessory: { Color.clear.frame(height: 1) }
+                    if nfoTemplate.enablePremiered {
+                        EditorFieldRow(label: L("Release Date")) {
+                            DatePicker(L("Release Date"), selection: $nfoTemplate.premieredDate, displayedComponents: .date)
+                                .labelsHidden()
+                                .onChange(of: nfoTemplate.premieredDate) { _, date in
+                                    nfoTemplate.year = String(Calendar.current.component(.year, from: date))
+                                }
+                        } accessory: { Color.clear.frame(height: 1) }
+                    }
                     DirectorField(director: $nfoTemplate.director); LabeledTextField(label: L("Studio"), text: $nfoTemplate.studio); GenreField(genres: $nfoTemplate.genres, currentInput: $currentGenreInput)
                 }.padding(.top, 8)
             }
-            GroupBox(label: Label("\(L("Rating")): \(String(format: "%.1f", nfoTemplate.rating))", systemImage: "star.circle").font(.headline)) { HStack(spacing: 12) { Slider(value: $nfoTemplate.rating, in: 0...10, step: 0.1); if nfoTemplate.rating > 0 { Button(L("Clear Rating")) { nfoTemplate.rating = 0 }.buttonStyle(.borderless).foregroundStyle(.secondary) } }.padding(.top, 8) }
+            Section(L("Extended Metadata")) {
+                LabeledTextField(label: L("Original Title"), text: detailBinding(\.originalTitle))
+                LabeledTextField(label: L("Sort Title"), text: detailBinding(\.sortTitle))
+                LabeledTextField(label: L("Tagline"), text: detailBinding(\.tagline))
+                LabeledTextField(label: L("Outline"), text: detailBinding(\.outline))
+                EditorFieldRow(label: L("Runtime Minutes")) {
+                    TextField(L("Runtime Minutes"), text: detailBinding(\.runtime))
+                        .textFieldStyle(.roundedBorder).disabled(isReadingRuntime)
+                } accessory: {
+                    HStack(spacing: 8) {
+                        Button(action: fetchRuntime) {
+                            if isReadingRuntime { ProgressView().controlSize(.small) }
+                            else { Text(L("Read Runtime")) }
+                        }
+                            .disabled(isReadingRuntime || selectedVideos.isEmpty)
+                            .help(L("Read Runtime Hint"))
+                        Button {
+                            detailBinding(\.runtime).wrappedValue = ""
+                        } label: { Image(systemName: "xmark.circle") }
+                        .buttonStyle(.borderless).disabled(isReadingRuntime).help(L("Clear Runtime"))
+                    }
+                }
+                if let values = nfoTemplate.runtimeByVideoID, !values.isEmpty {
+                    Text(L("Batch Runtime Ready")).font(.caption).foregroundStyle(.secondary)
+                }
+                LabeledTextField(label: L("Certification"), text: detailBinding(\.certification),
+                                 options: ["G", "PG", "PG-13", "R", "NC-17", "NR", "TV-Y", "TV-G", "TV-PG", "TV-14", "TV-MA"] )
+                LabeledTextField(label: L("Writers"), text: detailBinding(\.writers))
+                LabeledTextField(label: L("Tags"), text: detailBinding(\.tags))
+                Text(L("Multiple Values Hint")).font(.caption).foregroundStyle(.secondary)
+            }
+            Section(L("Collection and IDs")) {
+                LabeledTextField(label: L("Collection"), text: detailBinding(\.setName))
+                LabeledTextField(label: L("Collection Overview"), text: detailBinding(\.setOverview))
+                LabeledTextField(label: "IMDb ID", text: detailBinding(\.imdbID))
+                LabeledTextField(label: "TMDb ID", text: detailBinding(\.tmdbID))
+                LabeledTextField(label: L("Trailer"), text: detailBinding(\.trailer))
+                Text(L("Metadata IDs Hint")).font(.caption).foregroundStyle(.secondary)
+            }
+            Section(header: Label("\(L("Rating")): \(String(format: "%.1f", nfoTemplate.rating))", systemImage: "star.circle").font(.headline)) { HStack(spacing: 12) { Slider(value: $nfoTemplate.rating, in: 0...10, step: 0.1); if nfoTemplate.rating > 0 { Button(L("Clear Rating")) { nfoTemplate.rating = 0 }.buttonStyle(.borderless).foregroundStyle(.secondary) } }.padding(.top, 8) }
             
-            GroupBox(label: HStack {
+            Section(header: HStack {
                 Label(L("Plot"), systemImage: "text.alignleft").font(.headline); Spacer()
                 Button(action: {
                     guard let video = selectedVideos.first else { return }; isOCRExtracting = true
@@ -912,8 +997,10 @@ struct EditorDetailView: View {
                     else if ocrPhase == 1 { targetTime = 5.0 }
                     else { targetTime = 5.0 + Double(ocrPhase - 1) * 10.0 }
                     
-                    Task {
+                    let selection = selectedVideoIDs
+                    ocrTask = Task {
                         let text = await appState.performOCR(on: video.fileURL, times: [targetTime])
+                        guard !Task.isCancelled, selectedVideoIDs == selection else { return }
                         await MainActor.run {
                             if !text.isEmpty { nfoTemplate.plot += (nfoTemplate.plot.isEmpty ? "" : "\n") + text }
                             isOCRExtracting = false
@@ -926,41 +1013,142 @@ struct EditorDetailView: View {
                 }.buttonStyle(.glass).controlSize(.small).disabled(isOCRExtracting || selectedVideos.isEmpty)
             }) { TextEditor(text: $nfoTemplate.plot).frame(minHeight: 90, maxHeight: 160).font(.body).overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.secondary.opacity(0.2), lineWidth: 1)).padding(.top, 8) }
             
-            GroupBox(label: Label(L("Actors"), systemImage: "person.2").font(.headline)) { VStack(spacing: 8) { ForEach($nfoTemplate.actors) { $actor in ActorRow(actor: $actor) { nfoTemplate.actors.removeAll { $0.id == actor.id } } }; Button { nfoTemplate.actors.append(Actor()) } label: { Label(L("Add Actor"), systemImage: "person.badge.plus") }.buttonStyle(.borderless).padding(.top, 4) }.padding(.top, 8) }
+            Section(header: Label(L("Actors"), systemImage: "person.2").font(.headline)) { VStack(spacing: 8) { ForEach($nfoTemplate.actors) { $actor in ActorRow(actor: $actor) { nfoTemplate.actors.removeAll { $0.id == actor.id } } }; Button { nfoTemplate.actors.append(Actor()) } label: { Label(L("Add Actor"), systemImage: "person.badge.plus") }.buttonStyle(.borderless).padding(.top, 4) }.padding(.top, 8) }
             GallerySection(nfoData: $nfoTemplate, videoURL: selectedVideos.first?.fileURL)
-            Color.clear.frame(height: 60)
+        }
+        .formStyle(.grouped)
+    }
+
+    private func detailBinding(_ key: WritableKeyPath<MovieDetails, String>) -> Binding<String> {
+        Binding(get: { (nfoTemplate.details ?? MovieDetails())[keyPath: key] }, set: { value in
+            var details = nfoTemplate.details ?? MovieDetails()
+            details[keyPath: key] = value
+            nfoTemplate.details = details
+            if key == \MovieDetails.runtime { nfoTemplate.runtimeByVideoID = nil }
+        })
+    }
+
+    private func fetchRuntime() {
+        runtimeTask?.cancel()
+        let videos = selectedVideos
+        let selection = selectedVideoIDs
+        isReadingRuntime = true
+        runtimeTask = Task {
+            var values: [String: String] = [:]
+            do {
+                for video in videos {
+                    do { values[video.id.uuidString] = try await readRuntimeMinutes(at: video.fileURL) }
+                    catch is CancellationError { return }
+                    catch { throw NFOStore.WriteError(message: video.fileName + ": " + L("Runtime Unavailable") + "\n" + error.localizedDescription) }
+                }
+                guard !Task.isCancelled, selectedVideoIDs == selection else { return }
+                var details = nfoTemplate.details ?? MovieDetails()
+                details.runtime = Set(values.values).count == 1 ? (values.values.first ?? "") : ""
+                nfoTemplate.details = details
+                nfoTemplate.runtimeByVideoID = videos.count > 1 ? values : nil
+            } catch {
+                guard !Task.isCancelled, selectedVideoIDs == selection else { return }
+                appState.accessError = error.localizedDescription
+            }
+            if !Task.isCancelled { isReadingRuntime = false }
         }
     }
 
-    private func submitToQueue() { appState.addToQueue(videos: selectedVideos, data: nfoTemplate) }
+    private func submitToQueue() { guard !isReadingRuntime else { return }; appState.addToQueue(videos: selectedVideos, data: nfoTemplate, baseline: selectedVideos.count > 1 ? selectionBaseline : nil) }
     private func extractDateFromFileName(_ name: String) -> Date? { guard let regex = try? NSRegularExpression(pattern: "(19|20)\\d{2}[-.]?(0[1-9]|1[0-2])[-.]?(0[1-9]|[12][0-9]|3[01])") else { return nil }; let nsString = name as NSString; let results = regex.matches(in: name, range: NSRange(location: 0, length: nsString.length)); if let match = results.first { var dateStr = nsString.substring(with: match.range); dateStr = dateStr.replacingOccurrences(of: ".", with: "-"); let formatter = DateFormatter(); formatter.dateFormat = dateStr.count == 8 ? "yyyyMMdd" : "yyyy-MM-dd"; return formatter.date(from: dateStr) }; return nil }
     private func handleSelectionChange(_ newSelection: Set<UUID>) {
-        Task { for id in newSelection { if let video = appState.importedVideos.first(where: { $0.id == id }) { await appState.loadMetadata(for: video.fileURL) } } }; let validVideos = appState.importedVideos.filter { newSelection.contains($0.id) }
-        if validVideos.count == 1, let video = validVideos.first { nfoTemplate = NFOData(); nfoTemplate.targetFilename = video.baseName; if let extractedDate = extractDateFromFileName(video.baseName) { nfoTemplate.enablePremiered = true; nfoTemplate.premieredDate = extractedDate; nfoTemplate.year = String(Calendar.current.component(.year, from: extractedDate)) }; if let parsedNFO = parseExistingNFO(for: video) { mergeSingleNFO(parsedNFO) } } else if validVideos.count > 1 { nfoTemplate = NFOData(); let parsedNFOs = validVideos.compactMap { parseExistingNFO(for: $0) }; if let firstNFO = parsedNFOs.first, parsedNFOs.count == validVideos.count { var common = firstNFO; for nfo in parsedNFOs.dropFirst() { if common.year != nfo.year { common.year = "" }; if common.country != nfo.country { common.country = "" }; if common.studio != nfo.studio { common.studio = "" }; if common.director != nfo.director { common.director = "" }; common.genres = common.genres.filter { nfo.genres.contains($0) }; common.actors = common.actors.filter { a1 in nfo.actors.contains(where: { $0.name == a1.name }) } }; common.title = ""; common.plot = ""; common.rating = 0.0; common.targetFilename = ""; common.enablePremiered = false; common.posterURL = nil; common.fanartURLs = []; nfoTemplate = common } } else { nfoTemplate = NFOData() }
+        runtimeTask?.cancel()
+        isReadingRuntime = false
+        metadataTask?.cancel()
+        let validVideos = appState.importedVideos.filter { newSelection.contains($0.id) }
+        metadataTask = Task {
+            for video in validVideos {
+                guard !Task.isCancelled else { return }
+                await appState.loadMetadata(for: video.fileURL)
+            }
+        }
+        if validVideos.count == 1, let video = validVideos.first {
+            nfoTemplate = NFOData()
+            nfoTemplate.targetFilename = video.baseName
+            if let extractedDate = extractDateFromFileName(video.baseName) {
+                nfoTemplate.enablePremiered = true
+                nfoTemplate.premieredDate = extractedDate
+                nfoTemplate.year = String(Calendar.current.component(.year, from: extractedDate))
+            }
+            if let parsedNFO = parseExistingNFO(for: video) {
+                mergeSingleNFO(parsedNFO)
+            } else {
+                mergeSingleNFO(localArtworkNFO(for: video))
+            }
+        } else if validVideos.count > 1 {
+            nfoTemplate = NFOData()
+            let parsedNFOs = validVideos.compactMap { parseExistingNFO(for: $0) }
+            if let firstNFO = parsedNFOs.first, parsedNFOs.count == validVideos.count {
+                var common = firstNFO
+                for nfo in parsedNFOs.dropFirst() {
+                    if common.year != nfo.year { common.year = "" }
+                    if common.country != nfo.country { common.country = "" }
+                    if common.studio != nfo.studio { common.studio = "" }
+                    if common.director != nfo.director { common.director = "" }
+                    var details = common.details ?? MovieDetails()
+                    let other = nfo.details ?? MovieDetails()
+                    for key in MovieDetails.allKeys where details[keyPath: key] != other[keyPath: key] { details[keyPath: key] = "" }
+                    common.details = details
+                    common.genres = common.genres.filter { nfo.genres.contains($0) }
+                    common.actors = common.actors.filter { a1 in nfo.actors.contains(where: { $0.name == a1.name && $0.role == a1.role }) }
+                }
+                common.title = ""
+                common.plot = ""
+                common.rating = 0.0
+                common.targetFilename = ""
+                common.enablePremiered = false
+                common.posterURL = nil
+                common.fanartURLs = []
+                nfoTemplate = common
+            }
+        } else {
+            nfoTemplate = NFOData()
+        }
+        if nfoTemplate.details == nil { nfoTemplate.details = MovieDetails() }
+        selectionBaseline = nfoTemplate
     }
-    private func parseExistingNFO(for video: VideoItem) -> NFOData? {
-        SandboxAccessManager.shared.startAccessing(directoryOf: video.fileURL)
-        defer { SandboxAccessManager.shared.stopAccessing(directoryOf: video.fileURL) }
-        let nfoURL = video.folderURL.appendingPathComponent("\(video.baseName).nfo"); guard FileManager.default.fileExists(atPath: nfoURL.path), let xmlDoc = try? XMLDocument(contentsOf: nfoURL, options: []), let root = xmlDoc.rootElement() else { return nil }; var nfo = NFOData(); nfo.title = root.elements(forName: "title").first?.stringValue ?? ""; nfo.year = root.elements(forName: "year").first?.stringValue ?? ""; nfo.country = root.elements(forName: "country").first?.stringValue ?? ""; nfo.studio = root.elements(forName: "studio").first?.stringValue ?? ""; if let pStr = root.elements(forName: "premiered").first?.stringValue { let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"; if let pDate = df.date(from: pStr) { nfo.enablePremiered = true; nfo.premieredDate = pDate } }; nfo.director = root.elements(forName: "director").first?.stringValue ?? ""; nfo.plot = root.elements(forName: "plot").first?.stringValue ?? ""; if let r = Double(root.elements(forName: "userrating").first?.stringValue ?? "") { nfo.rating = r }; nfo.genres = root.elements(forName: "genre").compactMap { $0.stringValue }; nfo.actors = root.elements(forName: "actor").compactMap { node in let name = node.elements(forName: "name").first?.stringValue ?? ""; guard !name.isEmpty else { return nil }; return Actor(name: name, role: node.elements(forName: "role").first?.stringValue ?? "") }; return nfo
+
+    private func localArtworkNFO(for video: VideoItem) -> NFOData {
+        let artwork = discoverLocalArtwork(for: video.fileURL)
+        var nfo = NFOData()
+        nfo.posterURL = artwork.posterURL
+        nfo.fanartURLs = artwork.fanartURLs
+        return nfo
     }
-    private func mergeSingleNFO(_ nfo: NFOData) { if !nfo.title.isEmpty { nfoTemplate.title = nfo.title }; if !nfo.year.isEmpty { nfoTemplate.year = nfo.year }; if !nfo.country.isEmpty { nfoTemplate.country = nfo.country }; if !nfo.studio.isEmpty { nfoTemplate.studio = nfo.studio }; if nfo.enablePremiered { nfoTemplate.enablePremiered = true; nfoTemplate.premieredDate = nfo.premieredDate }; if !nfo.director.isEmpty { nfoTemplate.director = nfo.director }; if !nfo.plot.isEmpty { nfoTemplate.plot = nfo.plot }; if nfo.rating > 0 { nfoTemplate.rating = nfo.rating }; if !nfo.genres.isEmpty { nfoTemplate.genres = nfo.genres }; if !nfo.actors.isEmpty { nfoTemplate.actors = nfo.actors } }
+
+    private func mergeSingleNFO(_ nfo: NFOData) { nfoTemplate.details = nfo.details; if !nfo.title.isEmpty { nfoTemplate.title = nfo.title }; if !nfo.year.isEmpty { nfoTemplate.year = nfo.year }; if !nfo.country.isEmpty { nfoTemplate.country = nfo.country }; if !nfo.studio.isEmpty { nfoTemplate.studio = nfo.studio }; if nfo.enablePremiered { nfoTemplate.enablePremiered = true; nfoTemplate.premieredDate = nfo.premieredDate }; if !nfo.director.isEmpty { nfoTemplate.director = nfo.director }; if !nfo.plot.isEmpty { nfoTemplate.plot = nfo.plot }; if nfo.rating > 0 { nfoTemplate.rating = nfo.rating }; if !nfo.genres.isEmpty { nfoTemplate.genres = nfo.genres }; if !nfo.actors.isEmpty { nfoTemplate.actors = nfo.actors }; if nfo.posterURL != nil { nfoTemplate.posterURL = nfo.posterURL }; if !nfo.fanartURLs.isEmpty { nfoTemplate.fanartURLs = nfo.fanartURLs } }
 }
 
 struct QueueView: View {
+    @State private var selection = Set<UUID>()
     @Environment(AppState.self) private var appState;
     var body: some View {
         VStack(spacing: 0) {
-            Table(appState.queue) {
+            Table(appState.queue, selection: $selection) {
                 TableColumn(L("Target Video")) { item in Text(item.video.fileName).lineLimit(1).truncationMode(.middle) }; TableColumn(L("Write Title")) { item in Text(item.nfoData.title.isEmpty ? L("Auto Detect") : item.nfoData.title).lineLimit(1).foregroundStyle(item.nfoData.title.isEmpty ? .secondary : .primary) }
                 TableColumn(L("Status")) { item in VStack(alignment: .leading, spacing: 2) { Text(statusLabel(item.status)).foregroundStyle(statusColor(item.status)).fontWeight(.medium); if item.status == .error && !item.errorMessage.isEmpty { Text(item.errorMessage).font(.caption2).foregroundStyle(.red) } } }
                 TableColumn(L("Actions")) { item in Button { appState.queue.removeAll { $0.id == item.id } } label: { Image(systemName: "trash") }.buttonStyle(.borderless).foregroundStyle(.red).disabled(item.status == .processing) }.width(60)
-            }.contextMenu(forSelectionType: QueueItem.ID.self) { items in Button(L("Reveal in Finder")) { let urls = appState.queue.filter { items.contains($0.id) }.map { $0.video.fileURL }; if !urls.isEmpty { NSWorkspace.shared.activateFileViewerSelecting(urls) } }; Divider(); Button(L("Remove Selected Tasks"), role: .destructive) { appState.queue.removeAll { items.contains($0.id) } } }
+            }.contextMenu(forSelectionType: QueueItem.ID.self) { items in Button(L("Reveal in Finder")) { let urls = appState.queue.filter { items.contains($0.id) }.map { $0.video.fileURL }; if !urls.isEmpty { NSWorkspace.shared.activateFileViewerSelecting(urls) } }; Divider(); Button(L("Remove Selected Tasks"), role: .destructive) { appState.queue.removeAll { items.contains($0.id) && $0.status != .processing } } }
             Divider()
             HStack {
-                Button(L("Clear Done")) { appState.queue.removeAll { $0.status == .success } }.disabled(appState.queue.allSatisfy { $0.status != .success }); Spacer()
+                Button(L("Clear Done")) { appState.queue.removeAll { $0.status == .success } }.disabled(appState.queue.allSatisfy { $0.status != .success })
+                Button(L("Write History")) { appState.showingHistory = true }
+                Button(L("Retry Failed")) { appState.retryFailedItems() }
+                    .disabled(appState.isProcessingQueue || !appState.queue.contains { $0.status == .error })
+                Spacer()
+                if appState.isProcessingQueue { ProgressView().controlSize(.small) }
                 let waiting = appState.queue.filter { $0.status == .waiting }.count; let done = appState.queue.filter { $0.status == .success }.count
                 if !appState.queue.isEmpty { Text("\(L("Waiting")) \(waiting) · \(L("Done")) \(done)").font(.caption).foregroundStyle(.secondary) }
-                if #available(macOS 15.0, *) { Button { appState.processQueue() } label: { Label(L("Generate NFO"), systemImage: "play.fill") }.buttonStyle(.borderedProminent).buttonBorderShape(.capsule).controlSize(.large).tint(.green).disabled(appState.queue.filter { $0.status == .waiting }.isEmpty).keyboardShortcut(.return, modifiers: [.command, .shift]) } else { Button { appState.processQueue() } label: { Label(L("Generate NFO"), systemImage: "play.fill").padding(.horizontal, 28).padding(.vertical, 8) }.buttonStyle(.borderedProminent).clipShape(Capsule()).tint(.green).disabled(appState.queue.filter { $0.status == .waiting }.isEmpty).keyboardShortcut(.return, modifiers: [.command, .shift]) }
+                Button { appState.processQueue() } label: {
+                    Label(L("Preview Writes"), systemImage: "doc.text.magnifyingglass")
+                }.buttonStyle(.glassProminent).controlSize(.large)
+                    .disabled(!appState.canProcessQueue)
+                    .keyboardShortcut(.return, modifiers: [.command, .shift])
             }.padding(.horizontal, 16).padding(.vertical, 10).background(.bar)
         }
     }
@@ -969,28 +1157,142 @@ struct QueueView: View {
 }
 
 struct ContentView: View {
-    @Environment(AppState.self) private var appState;
-    @State private var columnVisibility: NavigationSplitViewVisibility = .all; @State private var selectedVideoIDs = Set<UUID>(); @State private var viewMode: Int = 0; @State private var isImportingVideos = false
+    @Environment(AppState.self) private var appState
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
+    @State private var selectedVideoIDs = Set<UUID>()
+    @State private var viewMode = 0
+    @State private var isImportingVideos = false
     let importNotifier = NotificationCenter.default.publisher(for: .init("TriggerImportVideos"))
+
     var body: some View {
-        NavigationSplitView(columnVisibility: $columnVisibility) { SidebarView(selectedVideoIDs: $selectedVideoIDs, isImportingVideos: $isImportingVideos) } detail: { ZStack(alignment: .top) { if viewMode == 0 { EditorDetailView(selectedVideoIDs: $selectedVideoIDs) } else { QueueView().padding(.top, 64) }; PillPicker(selection: $viewMode, queueCount: appState.queue.count).padding(.top, 14).zIndex(100) }.ignoresSafeArea(.all, edges: .top) }.navigationSplitViewStyle(.balanced).onReceive(importNotifier) { _ in isImportingVideos = true }.frame(minWidth: 1080, minHeight: 720)
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            SidebarView(selectedVideoIDs: $selectedVideoIDs, isImportingVideos: $isImportingVideos)
+                .navigationSplitViewColumnWidth(min: 220, ideal: 260, max: 400)
+        } detail: {
+            // Keep the editor alive while inspecting the queue, preserving unsaved fields.
+            ZStack {
+                EditorDetailView(selectedVideoIDs: $selectedVideoIDs)
+                    .opacity(viewMode == 0 ? 1 : 0)
+                    .allowsHitTesting(viewMode == 0).accessibilityHidden(viewMode != 0)
+                if viewMode == 1 { QueueView() }
+            }
+            .navigationTitle(viewMode == 0 ? L("Editor & Import") : L("Process Queue"))
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Picker(L("Workspace"), selection: $viewMode) {
+                        Text(L("Editor & Import")).tag(0)
+                        Text("\(L("Process Queue")) (\(appState.queue.count))").tag(1)
+                    }.pickerStyle(.segmented).fixedSize()
+                }
+                if #available(macOS 27.0, *) {
+                    ToolbarItem(placement: .primaryAction) { importButton }
+                        .visibilityPriority(ToolbarItemVisibilityPriority(higherThan: .high))
+                } else {
+                    ToolbarItem(placement: .primaryAction) { importButton }
+                }
+            }
+        }
+        .navigationSplitViewStyle(.balanced)
+        .onReceive(importNotifier) { _ in isImportingVideos = true }
+        .onAppear { selectedVideoIDs = appState.restoredSelection }
+        .onChange(of: selectedVideoIDs) { _, ids in appState.restoredSelection = ids }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in appState.saveSessionNow() }
+        .sheet(item: Binding(get: { appState.queuePreview }, set: { appState.queuePreview = $0 })) { preview in WritePreviewSheet(preview: preview) }
+        .sheet(isPresented: Binding(get: { appState.showingHistory }, set: { appState.showingHistory = $0 })) { WriteHistorySheet() }
+        .alert(L("File Access"), isPresented: Binding(get: { appState.accessError != nil && !appState.showingHistory && appState.queuePreview == nil }, set: { if !$0 { appState.accessError = nil } })) {
+            Button(L("OK"), role: .cancel) { appState.accessError = nil }
+        } message: { Text(appState.accessError ?? "") }
+        .frame(minWidth: 980, minHeight: 640)
+    }
+
+    private var importButton: some View {
+        Button { isImportingVideos = true } label: { Label(L("Import"), systemImage: "plus") }
+            .help(L("Import Videos"))
     }
 }
 
 struct SidebarView: View {
-    @Environment(AppState.self) private var appState; @Binding var selectedVideoIDs: Set<UUID>; @Binding var isImportingVideos: Bool; @State private var previewURL: URL?
+    @Environment(AppState.self) private var appState
+    @Binding var selectedVideoIDs: Set<UUID>
+    @Binding var isImportingVideos: Bool
+    @State private var previewURL: URL?
+    @State private var search = ""
+    @State private var issueFilter: LibraryIssue?
+
+    private var visibleVideos: [VideoItem] {
+        appState.importedVideos.filter { video in
+            (search.isEmpty || video.fileName.localizedCaseInsensitiveContains(search)) &&
+            (issueFilter == nil || appState.libraryIssues[video.id]?.contains(issueFilter!) == true)
+        }
+    }
+
+    private func remove(_ ids: Set<UUID>) {
+        appState.importedVideos.removeAll { ids.contains($0.id) }
+        selectedVideoIDs.subtract(ids)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
-            ZStack {
-                List(selection: $selectedVideoIDs) { ForEach(appState.importedVideos) { video in Text(video.fileName).lineLimit(2).truncationMode(.middle).tag(video.id).scaleEffect(previewURL == video.fileURL ? 1.05 : 1.0).opacity(previewURL == video.fileURL ? 0.8 : 1.0).animation(.spring(response: 0.3, dampingFraction: 0.6), value: previewURL) }.onDelete { indices in let idsToDelete = indices.map { appState.importedVideos[$0].id }; appState.importedVideos.remove(atOffsets: indices); idsToDelete.forEach { selectedVideoIDs.remove($0) } }; Color.clear.frame(maxWidth: .infinity, minHeight: 600).listRowBackground(Color.clear).contentShape(Rectangle()).onTapGesture { selectedVideoIDs.removeAll() } }.contextMenu(forSelectionType: VideoItem.ID.self) { items in if !items.isEmpty { Button(L("Reveal in Finder")) { let urls = appState.importedVideos.filter { items.contains($0.id) }.map { $0.fileURL }; if !urls.isEmpty { NSWorkspace.shared.activateFileViewerSelecting(urls) } }; Divider(); Button(L("Remove from List"), role: .destructive) { withAnimation { appState.importedVideos.removeAll { items.contains($0.id) }; items.forEach { selectedVideoIDs.remove($0) } } } } }.quickLookPreview($previewURL)
-                Button("") { withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) { if selectedVideoIDs.count == 1, let id = selectedVideoIDs.first, let video = appState.importedVideos.first(where: { $0.id == id }) { previewURL = video.fileURL } } }.keyboardShortcut(.space, modifiers: []).opacity(0)
-                if appState.importedVideos.isEmpty { VStack(spacing: 8) { Image(systemName: "arrow.down.doc").font(.title2).foregroundStyle(.tertiary); Text(L("Drop Videos Here")).font(.caption).foregroundStyle(.tertiary) } }
-            }.background(Color.clear.contentShape(Rectangle()).onTapGesture { selectedVideoIDs.removeAll() })
+            HStack {
+                Picker(L("Library Filter"), selection: $issueFilter) {
+                    Text(L("All Videos")).tag(nil as LibraryIssue?)
+                    ForEach(LibraryIssue.allCases) { issue in Text(issue.title).tag(Optional(issue)) }
+                }.labelsHidden()
+                Button { appState.checkLibrary() } label: {
+                    if appState.isCheckingLibrary { ProgressView().controlSize(.small) }
+                    else { Image(systemName: "arrow.clockwise") }
+                }.buttonStyle(.borderless).help(L("Check Library")).disabled(appState.isCheckingLibrary)
+            }.padding(.horizontal, 10).padding(.bottom, 8)
+            List(selection: $selectedVideoIDs) {
+                ForEach(visibleVideos) { video in
+                    HStack {
+                        Text(video.fileName).lineLimit(2).truncationMode(.middle)
+                        Spacer(minLength: 4)
+                        if let issues = appState.libraryIssues[video.id], !issues.isEmpty {
+                            Image(systemName: "exclamationmark.circle").foregroundStyle(.orange)
+                                .help(issues.map(\.title).sorted().joined(separator: "、"))
+                        }
+                    }.tag(video.id)
+                }
+                .onDelete { indices in remove(Set(indices.map { visibleVideos[$0].id })) }
+            }
+            .overlay {
+                if visibleVideos.isEmpty {
+                    Text(appState.importedVideos.isEmpty ? L("Drop Videos Here") : L("No Matching Videos"))
+                        .foregroundStyle(.secondary).font(.caption).allowsHitTesting(false)
+                }
+            }
+            .contextMenu(forSelectionType: UUID.self) { ids in
+                if !ids.isEmpty {
+                    Button(L("Reveal in Finder")) { NSWorkspace.shared.activateFileViewerSelecting(appState.importedVideos.filter { ids.contains($0.id) }.map(\.fileURL)) }
+                    if ids.count == 1, let video = appState.importedVideos.first(where: { ids.contains($0.id) }) {
+                        Button(L("Restore NFO Backup")) { appState.previewBackupRestore(video) }.disabled(appState.isProcessingQueue)
+                    }
+                    Button(L("Remove from List"), role: .destructive) { remove(ids) }
+                }
+            }
+            .scopedQuickLookPreview($previewURL)
+            .onKeyPress(.space) {
+                guard selectedVideoIDs.count == 1, let video = appState.importedVideos.first(where: { selectedVideoIDs.contains($0.id) }) else { return .ignored }
+                previewURL = video.fileURL
+                return .handled
+            }
             Divider()
-            HStack(spacing: 0) { Button { isImportingVideos = true } label: { Image(systemName: "plus").frame(width: 32, height: 32).contentShape(Rectangle()) }.buttonStyle(.borderless).help(L("Import")); Button { withAnimation { appState.importedVideos.removeAll { selectedVideoIDs.contains($0.id) }; selectedVideoIDs.removeAll() } } label: { Image(systemName: "minus").frame(width: 32, height: 32).contentShape(Rectangle()) }.buttonStyle(.borderless).help(L("Remove Selected")).disabled(selectedVideoIDs.isEmpty); Button { withAnimation { appState.toggleSort() } } label: { Image(systemName: appState.sortOption == .added ? "textformat.abc" : "clock").frame(width: 32, height: 32).contentShape(Rectangle()) }.buttonStyle(.borderless).help(appState.sortOption == .added ? L("Sort by Name") : L("Sort by Added")); Spacer(); if !selectedVideoIDs.isEmpty { Text("\(L("Selected Count")) \(selectedVideoIDs.count)").font(.caption).foregroundStyle(.secondary).padding(.trailing, 8) } }.padding(.horizontal, 8).frame(height: 36).background(.bar)
+            HStack {
+                Button { isImportingVideos = true } label: { Image(systemName: "plus") }.help(L("Import"))
+                Button { remove(selectedVideoIDs) } label: { Image(systemName: "minus") }.disabled(selectedVideoIDs.isEmpty).help(L("Remove Selected"))
+                Button { appState.toggleSort() } label: { Image(systemName: "arrow.up.arrow.down") }.help(L("Sort by Name"))
+                Spacer()
+                Text("\(visibleVideos.count)/\(appState.importedVideos.count)").font(.caption).foregroundStyle(.secondary)
+            }.buttonStyle(.borderless).padding(12).background(.bar)
         }.navigationTitle(L("Import Videos")).frame(minWidth: 220, idealWidth: 260)
+        .searchable(text: $search, placement: .sidebar, prompt: L("Search Videos"))
+        .task { appState.checkLibrary() }
         .onDrop(of: [.fileURL], isTargeted: nil) { providers in let collector = DropCollector(); let group = DispatchGroup(); for provider in providers { group.enter(); _ = provider.loadObject(ofClass: URL.self) { url, _ in if let url = url { Task { await collector.add(url); group.leave() } } else { group.leave() } } }; group.notify(queue: .main) { Task { let finalURLs = await collector.urls; appState.importFiles(urls: finalURLs) } }; return true }
-        .fileImporter(isPresented: $isImportingVideos, allowedContentTypes: [.audiovisualContent], allowsMultipleSelection: true) { result in if case .success(let urls) = result { appState.importFiles(urls: urls) } }
+        .fileImporter(isPresented: $isImportingVideos, allowedContentTypes: [.audiovisualContent, .folder] + supportedVideoExtensions.compactMap { UTType(filenameExtension: $0) }, allowsMultipleSelection: true) { result in switch result {
+            case .success(let urls): appState.importFiles(urls: urls)
+            case .failure(let error): appState.accessError = error.localizedDescription
+            } }
     }
 }
 
